@@ -1,14 +1,9 @@
 <?php
-// if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-// }
+session_start();
 require "db.php";
 
 $error = '';
 
-echo "<pre>";
-print_r($_POST);
-echo "</pre>";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Handle login
