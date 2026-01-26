@@ -1,9 +1,10 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
+// if (session_status() === PHP_SESSION_NONE) {
     session_start();
-}
-
+// }
 require "db.php";
+
+$error = '';
 
 echo "<pre>";
 print_r($_POST);
@@ -14,9 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
 
-    if (empty($email) || empty($password)) {
+    if ($email === '' || $password === '') {
         $error = "Email or password cannot be empty";
-        echo $error;
     } else {
         $sql = "SELECT employee_id, first_name, last_name, role_id, password_hash, status_id
                 FROM employee WHERE email = :email LIMIT 1";
@@ -29,10 +29,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error = "Account is inactive";
             } else {
                 session_regenerate_id(true);
+                $_SESSION['logged_in']   = true;
                 $_SESSION['employee_id'] = $user['employee_id'];
-                $_SESSION['name'] = $user['first_name'] . ' ' . $user['last_name'];
-                $_SESSION['role_id'] = $user['role_id'];
-                $_SESSION['logged_in'] = true;
+                $_SESSION['name']        = $user['first_name'] . ' ' . $user['last_name'];
+                $_SESSION['role_id']     = (int)$user['role_id'];
+                $_SESSION['email']       = $email; // 🔥 THIS WAS MISSING
 
                 // Redirect before sending any output
                 header("Location: index.php");
@@ -40,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         } else {
             $error = "Invalid email or password";
+           
         }
         echo $error;
     }
@@ -59,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="theme-color" content="#007bff" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)" />
     
-    <meta name="title" content="AdminLTE 4 | Login Page v2" />
+    <meta name="title" content="FixIT " />
     <meta name="author" content="ColorlibHQ" />
     <meta
       name="description"
@@ -71,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     />
     
     <meta name="supported-color-schemes" content="light dark" />
-    <link rel="preload" href="../css/adminlte.css" as="style" />
+    <link rel="preload" href="./css/adminlte.css" as="style" />
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css"

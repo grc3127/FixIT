@@ -1,9 +1,29 @@
 <?php
 session_start();
-if (empty($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-    header("Location: login.php");
+
+if (empty($_SESSION['logged_in'])) {
+    header('Location: login.php');
     exit;
 }
+
+switch ($_SESSION['role_id']) {
+    case 1:
+        // admin content
+        break;
+
+    case 2:
+        // manager content
+        break;
+
+    case 3:
+        // employee content
+        break;
+
+    default:
+        http_response_code(403);
+        exit('Access denied');
+}
+
 ?>
 
 <!doctype html>
