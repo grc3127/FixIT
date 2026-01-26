@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($email === '' || $password === '') {
         $error = "Email or password cannot be empty";
     } else {
-        $sql = "SELECT employee_id, first_name, last_name, role_id, password_hash, status_id
+        $sql = "SELECT employee_id, first_name, last_name, middle_name, role_id, password_hash, status_id
                 FROM employee WHERE email = :email LIMIT 1";
         $stmt = $pdo->prepare($sql);
         $stmt->execute(['email' => $email]);
@@ -31,7 +31,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 session_regenerate_id(true);
                 $_SESSION['logged_in']   = true;
                 $_SESSION['employee_id'] = $user['employee_id'];
-                $_SESSION['name']        = $user['first_name'] . ' ' . $user['last_name'];
+                $_SESSION['first_name']  = $user['first_name'];
+                $_SESSION['middle_name'] = $user['middle_name'] ?? '';
+                $_SESSION['last_name']   = $user['last_name'];
                 $_SESSION['role_id']     = (int)$user['role_id'];
                 $_SESSION['email']       = $email; // 🔥 THIS WAS MISSING
 
