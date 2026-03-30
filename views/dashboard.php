@@ -48,7 +48,7 @@
               </div>
               <div class="card-footer">
                 <div class="position-relative mb-4">
-                  <div id="sales-chart1"></div>
+                  <div id="sales-chart1" ></div>
                 </div>
                 <div class="d-flex flex-row justify-content-end">
                   <!-- <span class="me-2">
@@ -156,39 +156,15 @@
 
       if (isset($_SESSION['role_id']) && $_SESSION['role_id'] === 1) {
         echo <<<HTML
-          <!-- DIRECT CHAT -->
             <div class="card direct-chat direct-chat-primary mb-4">
-              <div class="card-header">
-                <h3 class="card-title">Feedback History</h3>
-              </div>
-              <div class="card-body">
-                <div class="direct-chat-messages">
-                  <div class="direct-chat-msg">
-                    <div class="direct-chat-infos clearfix">
-                      <span class="direct-chat-name float-start"> Alexander Pierce  ➜  Employee 1</span>
-                      <span class="direct-chat-timestamp float-end"> Rating: 6.7 | 23 Jan 2:00 pm </span>
-                    </div>
-                    <img
-                      class="direct-chat-img"
-                      src="./assets/img/user1-128x128.jpg"
-                      alt="message user image"
-                    />
-                    <div class="direct-chat-text">
-                      Very nice!
-                    </div>
-                  </div>
-                  
-                  
-                  
-                </div>
-                <!-- /.direct-chat-messages-->
-                <!-- /.direct-chat-pane -->
-              </div>
-              <!-- /.card-body -->
-            </div>
-            <!-- /.direct-chat -->
         HTML;
-      }
+
+        include 'feedback.php';
+
+        echo <<<HTML
+            </div>
+            HTML;
+              }
         
       ?>
 
@@ -221,17 +197,31 @@
   <script src="js/apexcharts.min.js"></script>
   <!-- ChartJS -->
   <script>
-  const chart_options = {
+  let chart;
+  fetch('handlers/get_chart_data.php')
+  .then(res => res.json())
+  .then(data => {
+    console.log("Fetched Data:", data)
+    const chartElement = document.querySelector('#sales-chart1');
+    if (!chartElement) {
+        console.error("Element #sales-chart1 not found");
+        return;
+    } 
+    const chart_options = {
       series: [
-        { name: 'Job Requests', data: [0, 0, 0] },
-        { name: 'Inventory Requests', data: [0, 0, 0] }
+        { 
+          name: 'Job Requests', 
+          data: data.jobs 
+        },
+        { 
+          name: 'Inventory Requests', 
+          data: data.inventory 
+        }
       ],
       chart: {
         type: 'bar',
         height: 200,
-        animations: {
-          enabled: false // This often stops the "attribute d" error if data is swapping quickly
-        }
+        animations: { enabled: true }
       },
       plotOptions: {
         bar: {
@@ -257,47 +247,12 @@
           },
         },
       }
-  }
-
-
-  const chart = new ApexCharts(
-      document.querySelector('#sales-chart1'),
-      chart_options,
-  );
-  chart.render();
-
-  function updateDashboard() {
-  fetch('handlers/get_chart_data.php')
-    .then(response => response.json())
-    .then(data => {
-      // ✅ Fallback to [0, 0, 0] if data is missing or malformed
-      const jobs = (data && Array.isArray(data.jobs)) ? data.jobs : [0, 0, 0];
-      const inventory = (data && Array.isArray(data.inventory)) ? data.inventory : [0, 0, 0];
-
-      // ✅ Force check: If parseInt fails, return 0. This stops "NaN" strings.
-      const cleanJobs = jobs.map(x => {
-        const val = parseInt(x, 10);
-        return isNaN(val) ? 0 : val;
-      });
-      
-      const cleanInventory = inventory.map(x => {
-        const val = parseInt(x, 10);
-        return isNaN(val) ? 0 : val;
-      });
-
-      chart.updateSeries([
-        { name: 'Job Requests', data: cleanJobs },
-        { name: 'Inventory Requests', data: cleanInventory }
-      ]);
-    })
-    .catch(err => {
-      console.error('Fetch Error:', err);
-      chart.updateSeries([
-        { name: 'Job Requests', data: [0, 0, 0] },
-        { name: 'Inventory Requests', data: [0, 0, 0] }
-      ]);
-    });   
-  }
-  
-  setInterval(updateDashboard, 5000);  
+    }
+    chart = new ApexCharts(
+        document.querySelector('#sales-chart1'),
+        chart_options,
+    );
+    chart.render();
+  })
+  .catch(err => console.error("Fetch error:", err)); // Always add a catch! 
 </script>

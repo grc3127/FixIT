@@ -8,10 +8,33 @@ if (empty($_SESSION['logged_in'])) {
 
 require "db.php";
 
-$page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
+$routes = [
+    'dashboard'          => [1, 2, 3],
+    'job_requests'       => [1, 2],
+    'inventory_requests' => [1, 2],
+    'inventory_mgmt'     => [1, 2],
+    'user_mgmt'          => [1, 2],
+    'service_request'    => [3],
+];
+
+$page = $_GET['page'] ?? 'dashboard';
 $role = $_SESSION['role_id'];
-if ($page === 'dashboard') {
-    include 'handlers/dashboard_data.php';
+$template = "pages/404_error.php";
+
+if (array_key_exists($page, $routes)) {
+    if (in_array($role, $routes[$page])) {
+        // Dashboard is a special case in your original code
+        if ($page === 'dashboard') {
+            include 'handlers/dashboard_data.php';
+            $template = 'views/dashboard.php';
+        } else {
+            // Map 'service_request' to 'service_req.php' if filenames differ
+            $filename = ($page === 'service_request') ? 'service_req' : $page;
+            $template = "pages/{$filename}.php";
+        }
+    } else {
+        $template = "pages/403_error.php"; // Access Denied
+    }
 }
 
 ?>
@@ -69,39 +92,18 @@ if ($page === 'dashboard') {
 
 <body class="layout-fixed sidebar-expand-lg sidebar-open bg-body-tertiary">
     <div class="app-wrapper ">
-        <?php
-        include 'views/header.php';
-        include 'views/sidebar.php';
-
-        
-        switch ($page) {
-            case 'job_requests':
-            case 'inventory_requests':
-            case 'inventory_mgmt':
-            case 'user_mgmt':
-                // Only allow roles 1 and 2
-                if ($role == 1 || $role == 2) {
-                    include "pages/{$page}.php";
-                } else {
-                    include "pages/403_error.php"; // Access Denied
-                }
-                break;
-            case 'service_request':
-                // Only allow role 3
-                if ($role == 3) {
-                    include "pages/service_req.php";
-                } else {
-                    include "pages/403_error.php";
-                }
-                break;
-            default:
-                include 'views/dashboard.php';
-                break;
-        }
+        <?php 
+            include 'views/header.php';
+            include 'views/sidebar.php';
+            
+            // Render the resolved page
+            if (file_exists($template)) {
+                include $template;
+            } else {
+                echo "<div class='p-4'>Error: File not found ($template)</div>";
+            }
         ?>
     </div>
-    <?php
-    ?>
     <!--begin::Third Party Plugin(OverlayScrollbars)-->
     <script
         src="js/overlayscrollbars.browser.es6.min.js"></script>
