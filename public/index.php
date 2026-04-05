@@ -192,7 +192,7 @@ function acceptJob(ticketId) {
     jrModal.show();
 }
 
-document.getElementById('jrConfirmBtn').addEventListener('click', function() {
+document.getElementById('jrconfirmAcceptModal').addEventListener('click', function() {
     if (!selectedJobId) return;
     processAcceptance(this, '../src/handlers/accept_job_request.php', selectedJobId, jrModal);
 });
@@ -203,14 +203,12 @@ function acceptInventory(ticketId) {
     irModal.show();
 }
 
-document.getElementById('irConfirmBtn').addEventListener('click', function() {
+document.getElementById('irconfirmAcceptModal').addEventListener('click', function() {
     if (!selectedInvId) return;
     processAcceptance(this, '../src/handlers/accept_inv_request.php', selectedInvId, irModal);
 });
 
-/**
- * Reusable function to handle the fetch request
- */
+
 function processAcceptance(btn, handlerPath, id, modalObj) {
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Processing...';

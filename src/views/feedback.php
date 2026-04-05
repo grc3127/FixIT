@@ -1,19 +1,15 @@
 <?php
 try {
-    $sql = $sql = "SELECT 
-                e.employee_id, 
-                e.first_name, 
-                e.last_name,
-                e.profile_pic, 
-                f.remarks, 
-                f.rating,
-                jr.status_id,
-                jr.updated_at
-             FROM feedback f
-             INNER JOIN employee e ON f.employee_id = e.employee_id
-             INNER JOIN job_request jr ON f.employee_id = jr.requested_by_employee
-             WHERE jr.status_id = 3
-             ORDER BY jr.updated_at DESC";
+    $sql = "SELECT 
+            e.first_name, e.last_name, e.profile_pic, 
+            f.remarks, f.rating,
+            jr.updated_at
+            FROM feedback f
+            INNER JOIN job_request jr ON f.j_ticket_id = jr.j_ticket_id
+            INNER JOIN employee e ON jr.requested_by_employee = e.employee_id
+            WHERE jr.status_id = 3
+            ORDER BY f.feedback_id DESC";
+             
     $stmt = $pdo->query($sql);
     $feedbacks = $stmt->fetchAll();
 } catch (\PDOException $e) {

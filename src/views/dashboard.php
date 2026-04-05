@@ -189,72 +189,104 @@
 <!--end::Footer-->
 
 <!--begin::Script-->
-  
+<!-- apexcharts -->
+<script src="../public/js/apexcharts.min.js"></script>
+<!-- ChartJS -->
 
-
-
-
-  
-  <!-- apexcharts -->
-  <script src="../public/js/apexcharts.min.js"></script>
-  <!-- ChartJS -->
-  <script>
+<!-- <script>
   let chart;
   fetch('../src/handlers/get_chart_data.php')
-  .then(res => res.text())
-  .then(data => {
-    console.log("Fetched Data:", data)
-    const chartElement = document.querySelector('#sales-chart1');
-    if (!chartElement) {
-        console.error("Element #sales-chart1 not found");
-        return;
-    } 
-    const chart_options = {
-      series: [
-        { 
-          name: 'Job Requests', 
-          data: data.jobs 
-        },
-        { 
-          name: 'Inventory Requests', 
-          data: data.inventory 
-        }
-      ],
-      chart: {
-        type: 'bar',
-        height: 200,
-        animations: { enabled: true }
-      },
-      plotOptions: {
-        bar: {
-          horizontal: false,
-          columnWidth: '40%',
-          borderRadius: 1
-        }
-      },
-      legend: {
-        show: true,
-      },
-      colors: ['#0d6efd', '#20c997'],
-      dataLabels: {
-        enabled: false,
-      },
-      xaxis: {
-        categories: ['Monthly', 'Weekly', 'Daily'],
-      },
-      tooltip: {
-        y: {
-          formatter: function(val) {
-            return val + ' requests';
-          },
-        },
-      }
-    }
-    chart = new ApexCharts(
-        document.querySelector('#sales-chart1'),
-        chart_options,
-    );
-    chart.render();
+  .then(res => {
+      if (!res.ok) throw new Error('Network response was not ok');
+      return res.json();
   })
-  .catch(err => console.error("Fetch error:", err)); // Always add a catch! 
+  .then(data => {
+      const chartElement = document.querySelector('#sales-chart1');
+      if (!chartElement) {
+          console.error("Element #sales-chart1 not found");
+          return;
+      } 
+      
+      const chart_options = {
+          // Now data.jobs and data.inventory are actual arrays
+          series: [
+              { 
+                  name: 'Job Requests', 
+                  data: data.jobs 
+              },
+              { 
+                  name: 'Inventory Requests', 
+                  data: data.inventory 
+              }
+          ],
+          chart: {
+              type: 'bar',
+              height: 200,
+              animations: { enabled: true }
+          },
+          // ... rest of your options ...
+          xaxis: {
+              categories: ['Monthly', 'Weekly', 'Daily'],
+          }
+      };
+
+      chart = new ApexCharts(chartElement, chart_options);
+      chart.render();
+  })
+  .catch(err => console.error("Fetch error:", err));
+</script> -->
+
+<script>
+let chart;
+
+function updateChartData() {
+    fetch('../src/handlers/get_chart_data.php')
+    .then(res => res.json())
+    .then(data => {
+        if (chart) {
+            chart.updateSeries([
+                { name: 'Job Requests', data: data.jobs },
+                { name: 'Inventory Requests', data: data.inventory }
+            ]);
+        } else {
+            initChart(data);
+        }
+    })
+    .catch(err => console.error("Fetch error:", err));
+}
+
+function initChart(data) {
+    const chart_options = {
+        series: [
+            { name: 'Job Requests', data: data.jobs },
+            { name: 'Inventory Requests', data: data.inventory }
+        ],
+        chart: {
+            type: 'bar',
+            height: 200,
+            animations: {
+                enabled: true,
+                easing: 'easeinout',
+                speed: 800
+            }
+        },
+        colors: ['#0d6efd', '#20c997'],
+        xaxis: {
+            categories: ['Monthly', 'Weekly', 'Daily'],
+        },
+        tooltip: {
+          y: {
+            formatter: function(val) {
+              return val + ' requests';
+            },
+          },
+        }
+    };
+
+    chart = new ApexCharts(document.querySelector('#sales-chart1'), chart_options);
+    chart.render();
+}
+
+updateChartData();
+setInterval(updateChartData, 30000); 
 </script>
