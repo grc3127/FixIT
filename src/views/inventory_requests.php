@@ -7,7 +7,7 @@ include '../src/handlers/inventory_request_data.php';
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-6">
-                    <h3 class="mb-0">Inventory Requests</h3>
+                    <h2 class="mb-0">Inventory Requests</h2>
                 </div>
             </div>
         </div>
@@ -26,10 +26,10 @@ include '../src/handlers/inventory_request_data.php';
             <div class="col-md-7">
                 <div class="card h-100">
                     <div class="card-header  bg-white">
-                        <h4>Daily Statistics</h4>
+                        <h3>Daily Statistics</h3>
                     </div>
                     <div class="card-body">
-                        <div class="row">
+                        <div class="row h-100">
                             <div class="col-md-4">
                                 <div class="small-box text-bg-danger p-3 rounded-3 h-100">
                                     <h4 class="fw-bold"><?=  $countNew ?></h4>
@@ -71,7 +71,7 @@ include '../src/handlers/inventory_request_data.php';
                     <div class="card-header">
                         <div class="row align-items-center">
                             <div class="col">
-                                <h4 class="m-0">Current Job Request</h4>
+                                <h3 class="m-0">Current Job Request</h3>
                             </div>
                             <div class="col-auto text-end">
                                 <button type="submit" class="btn btn-success rounded-pill">DONE</button>

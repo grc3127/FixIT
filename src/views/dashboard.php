@@ -7,13 +7,7 @@
       <!--begin::Row-->
       <div class="row">
         <div class="col-sm-6">
-          <h3 class="mb-0">Dashboard</h3>
-        </div>
-        <div class="col-sm-6">
-          <ol class="breadcrumb float-fsm-end">
-            <li class="breadcrumb-item"><a href="#">Home </a></li>
-            <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
-          </ol>
+          <h2 class="mb-0">Dashboard</h2>
         </div>
       </div>
       <!--end::Row-->
@@ -30,6 +24,7 @@
       <?php
       $request_overtime = $APP->get('request_overtime');
       $request_overtime_safe = htmlspecialchars($request_overtime, ENT_QUOTES, 'UTF-8');
+      $current_date = date("l, F j, Y");
       if (isset($_SESSION['role_id']) &&
           in_array($_SESSION['role_id'], [1, 2], true)
         ) {
@@ -40,12 +35,12 @@
               <div class="card-header">
                 <div class="d-flex">
                   <p class="d-flex flex-column">
-                    <span class="fw-bold fs-5">{$request_overtime_safe}</span> <span>Requests Overtime</span>
+                    <span class="fw-bold fs-5">Total completed requests: {$request_overtime_safe}</span> <span>{$current_date}</span>
                   </p>
-                  <p class="ms-auto d-flex flex-column text-end">
+                  <!-- <p class="ms-auto d-flex flex-column text-end">
                     <span class="text-success"> <i class="bi bi-arrow-up"></i> 33.1% </span>
                     <span class="text-secondary">Since Past Year</span>
-                  </p>
+                  </p> -->
                 </div>
               </div>
               <div class="card-footer">
@@ -151,6 +146,33 @@
             <!-- START OF JOB REQUEST STATISTICS CARDS  -->
           </div>
           <div class="row">
+          </div>
+          
+        HTML;
+      } else{
+        echo <<<HTML
+          <div class="row">
+            <!-- Left card -->
+              <div class="col d-flex justify-content-start">
+                <div class="card direct-chat direct-chat-primary mb-4 w-100" >
+                  <div class="card-header">Job Request</div>
+                  <div class="card-body">
+                    if(){
+                      
+                    }
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right card -->
+              <div class="col d-flex justify-content-end">
+                <div class="card direct-chat direct-chat-primary mb-4 w-100">
+                  <div class="card-header">Inventory Request</div>
+                  <div class="card-body">
+
+                  </div>
+                </div>
+              </div>
           </div>
           
         HTML;

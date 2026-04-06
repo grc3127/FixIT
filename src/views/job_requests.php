@@ -8,7 +8,7 @@ include '../src/handlers/job_request_data.php';
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-6">
-                    <h3 class="mb-0">Job Request</h3>
+                    <h2 class="mb-0">Job Request</h2>
                 </div>
             </div>
         </div>
@@ -28,28 +28,28 @@ include '../src/handlers/job_request_data.php';
             <div class="col-md-7">
                 <div class="card h-100">
                     <div class="card-header  bg-white">
-                        <h4>Daily Statistics</h4>
+                        <h3>Daily Statistics</h3>
                     </div>
                     <div class="card-body">
-                        <div class="row">
+                        <div class="row h-100">
                             <div class="col-md-4">
                                 <div class="small-box text-bg-danger p-3 rounded-3 h-100">
-                                    <h4 class="fw-bold"><?=  $countNew ?></h4>
-                                    <p class="m-0" style="font-size: 1.5vw;">New Job<br>Requests</p>
+                                    <h4 class="fw-bold"><?=  $countNew ?></h4><br>
+                                    <p class="m-0" style="font-size: 2vw;">New Job<br>Requests</p>
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="small-box text-bg-warning p-3 rounded-3 text-white h-100">
-                                    <h4 class="fw-bold"><?=  $countPending ?></h4>
-                                    <p class="m-0" style="font-size: 1.5vw;">Pending Job<br>Requests</p>
+                                    <h4 class="fw-bold"><?=  $countPending ?></h4><br>
+                                    <p class="m-0" style="font-size: 2vw;">Pending Job<br>Requests</p>
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="small-box text-bg-success p-3 rounded-3 h-100">
-                                    <h4 class="fw-bold"><?=  $countFinished ?></h4>
-                                    <p class="m-0" style="font-size: 1.5vw;">Finished Job<br>Requests</p>
+                                    <h4 class="fw-bold"><?=  $countFinished ?></h4><br>
+                                    <p class="m-0" style="font-size: 2vw;">Finished Job<br>Requests</p>
                                 </div>
                             </div>
 
@@ -67,20 +67,19 @@ include '../src/handlers/job_request_data.php';
                     $aDate       = date('M d, Y @ h:ia', strtotime($activeJob['created_at']));
                     $aDept       = htmlspecialchars($activeJob['dept_name']);
                     $aDesc       = htmlspecialchars($activeJob['description']);
+                    $aType       = htmlspecialchars($activeJob['request_type']);
                 ?>
 
                 <div class="card shadow-sm h-100 d-flex flex-column">
                     <div class="card-header">
                         <div class="row align-items-center">
                             <div class="col">
-                                <h4 class="m-0">Current Job Request</h4>
+                                <h3 class="">Current Job Request</h3>
                             </div>
                             <div class="col-auto text-end">
-                                <button type="submit" class="btn btn-success rounded-pill">DONE</button>
+                                <button type="submit" id="jrFinishRequest" class="btn btn-success rounded-pill">DONE</button>
                             </div>
                         </div>
-                        
-                        
                     </div>
 
                     <div class="card-body">
@@ -90,6 +89,7 @@ include '../src/handlers/job_request_data.php';
                                 <p><strong>Name:</strong> <?= $aFullName ?></p>
                                 <p><strong>Date:</strong> <?= $aDate ?></p>
                                 <p><strong>Department:</strong> <?= $aDept ?></p>
+                                <p><strong>Department:</strong> <?= $aType ?></p>
                                 <p><strong>Description:</strong> <?= $aDesc ?></p>
                             </div>
                         </div>
@@ -131,12 +131,13 @@ include '../src/handlers/job_request_data.php';
                 echo '<p class="text-center text-muted">No new job requests found.</p>';
             } else {
                 foreach ($jobRequests as $row) {
-
+                    
                     $profilePic = !empty($row['profile_pic']) ? htmlspecialchars($row['profile_pic']) : '../public/img/profile_pic/nicolai.png';
                     $fullName   = htmlspecialchars($row['first_name'] . ' ' . $row['last_name']);
                     $ticketID   = "jobDetails" . $row['j_ticket_id'];
                     $formattedDate = date('F d, Y', strtotime($row['created_at']));
                     $deptName   = htmlspecialchars($row['dept_name']);
+                    $rType   = htmlspecialchars($row['request_type']);
                     $description= htmlspecialchars($row['description']);
 
                     if ($hasActiveTask) {
@@ -182,6 +183,12 @@ include '../src/handlers/job_request_data.php';
                                 <div class="col-auto px-1">:</div>
                                 <div class="col"><?= $deptName ?></div>
                             </div>
+                            <div class="row mb-2 align-items-baseline">
+                                <div class="col-auto text-muted" style="width: 30px;"><i class="bi bi-building"></i></div>
+                                <div class="col-auto px-1" style="width: 120px;"><strong>Type</strong></div>
+                                <div class="col-auto px-1">:</div>
+                                <div class="col"><?= $rType ?></div>
+                            </div>
                             <div class="row align-items-baseline">
                                 <div class="col-auto text-muted" style="width: 30px;"><i class="bi bi-chat-left-text"></i></div>
                                 <div class="col-auto px-1" style="width: 120px;"><strong>Description</strong></div>
@@ -205,3 +212,9 @@ include '../src/handlers/job_request_data.php';
         </div>
     </div>
 </main>
+
+<script>
+    // DEFINE THIS FIRST before the rest of the logic
+    const currentActiveJobTicketId = "<?php echo isset($activeJob['j_ticket_id']) ? $activeJob['j_ticket_id'] : ''; ?>";
+    console.log("Active Ticket ID set to:", currentActiveJobTicketId); // Debugging line
+</script>

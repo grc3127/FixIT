@@ -21,7 +21,8 @@ $countFinished = $stmtFinished->fetchColumn();
 
 $activeJobSql = "SELECT 
             jr.j_ticket_id, 
-            jr.description, 
+            jr.description,
+            jr.request_type, 
             jr.created_at,
             e.first_name, 
             e.last_name, 
@@ -39,23 +40,23 @@ $activeStmt->execute(['eid' => $currentUserId]);
 $activeJob = $activeStmt->fetch();
 
 
-
-
 $sql = "SELECT 
             jr.j_ticket_id, 
             jr.description, 
+            jr.request_type, 
             jr.created_at,
             e.first_name, 
             e.last_name, 
             e.profile_pic,
             d.dept_name,
-            rs.status_name as request_type -- Using status or a static 'Digital' as per your UI
+            rs.status_name -- Corrected from request_status to status_name
         FROM job_request jr
         JOIN employee e ON jr.requested_by_employee = e.employee_id
         JOIN department d ON e.dept_id = d.dept_id
         JOIN request_status rs ON jr.status_id = rs.status_id
-        WHERE jr.status_id = 1 -- 1 represents 'Pending' or 'New'
+        WHERE jr.status_id = 1
         ORDER BY jr.created_at ASC";
+        
 
 $stmt = $pdo->query($sql);
 $jobRequests = $stmt->fetchAll();
@@ -68,5 +69,7 @@ $checkStmt = $pdo->prepare($checkSql);
 $checkStmt->execute(['eid' => $currentUserId]);
 $hasActiveTask = ($checkStmt->fetchColumn() > 0);
 
-echo "Debug: Logged in ID is: " . $currentUserId . " | Has Active Task: " . ($hasActiveTask ? 'YES' : 'NO');
+// echo "Debug: Logged in ID is: " . $currentUserId . " | Has Active Task: " . ($hasActiveTask ? 'YES' : 'NO');
+
+
 ?>

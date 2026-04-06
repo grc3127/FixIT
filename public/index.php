@@ -152,8 +152,27 @@ if (array_key_exists($page, $routes)) {
                 
                 <div class="d-flex justify-content-center gap-2 mt-4">
                     <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" id="confirmBtn" class="btn btn-success px-4">Yes, Accept it</button>
+                    <button type="button" id="jrConfirmBtn" class="btn btn-success px-4">Yes, Accept it</button>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="jrFinishModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">Job Completion Report</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label for="jrRemarks" class="form-label">Remarks</label>
+                <textarea class="form-control" id="jrRemarks" rows="4" placeholder="Describe what was done..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" id="submitFinishBtn" class="btn btn-success">Submit & Finish</button>
             </div>
         </div>
     </div>
@@ -169,7 +188,7 @@ if (array_key_exists($page, $routes)) {
                 
                 <div class="d-flex justify-content-center gap-2 mt-4">
                     <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" id="confirmBtn" class="btn btn-success px-4">Yes, Accept it</button>
+                    <button type="button" id="irConfirmBtn" class="btn btn-success px-4">Yes, Accept it</button>
                 </div>
             </div>
         </div>
@@ -177,14 +196,19 @@ if (array_key_exists($page, $routes)) {
 </div>
 
 
+
 <script>
 // Variables to store the selected IDs
 let selectedJobId = null;
 let selectedInvId = null;
 
+
 // Initialize Modals
 const jrModal = new bootstrap.Modal(document.getElementById('jrconfirmAcceptModal'));
+const jrFinishModal = new bootstrap.Modal(document.getElementById('jrFinishModal'));
+
 const irModal = new bootstrap.Modal(document.getElementById('irconfirmAcceptModal'));
+
 
 // --- JOB REQUEST LOGIC ---
 function acceptJob(ticketId) {
@@ -192,10 +216,16 @@ function acceptJob(ticketId) {
     jrModal.show();
 }
 
-document.getElementById('jrconfirmAcceptModal').addEventListener('click', function() {
+document.getElementById('jrConfirmBtn').addEventListener('click', function() {
     if (!selectedJobId) return;
     processAcceptance(this, '../src/handlers/accept_job_request.php', selectedJobId, jrModal);
 });
+
+if(document.getElementById('jrFinishRequest')) {
+    document.getElementById('jrFinishRequest').addEventListener('click', function() {
+        jrFinishModal.show();
+    });
+}
 
 // --- INVENTORY REQUEST LOGIC ---
 function acceptInventory(ticketId) {
@@ -203,7 +233,56 @@ function acceptInventory(ticketId) {
     irModal.show();
 }
 
-document.getElementById('irconfirmAcceptModal').addEventListener('click', function() {
+document.getElementById('submitFinishBtn').addEventListener('click', function() {
+    const remarks = document.getElementById('jrRemarks').value.trim();
+    const btn = this;
+
+    // DEBUG: Check values in console (F12)
+    console.log("Attempting to finish job...");
+    console.log("Ticket ID:", currentActiveJobTicketId);
+    console.log("Remarks:", remarks);
+
+    if (!currentActiveJobTicketId) {
+        alert("Error: No active ticket ID found. Please refresh the page.");
+        return;
+    }
+
+    if (!remarks) {
+        alert("Please enter remarks.");
+        return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Saving...';
+
+    fetch('../src/handlers/finish_job_request.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `ticket_id=${encodeURIComponent(currentActiveJobTicketId)}&remarks=${encodeURIComponent(remarks)}`
+    })
+    .then(response => {
+        // If PHP crashes, this helps you see the "messy" error
+        if (!response.ok) throw new Error('Network response was not ok');
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert(data.message);
+            btn.disabled = false;
+            btn.innerText = "Submit & Finish";
+        }
+    })
+    .catch(err => {
+        console.error('Fetch error:', err);
+        alert("Connection error. Check console for details.");
+        btn.disabled = false;
+        btn.innerText = "Submit & Finish";
+    });
+});
+
+document.getElementById('irConfirmBtn').addEventListener('click', function() {
     if (!selectedInvId) return;
     processAcceptance(this, '../src/handlers/accept_inv_request.php', selectedInvId, irModal);
 });
@@ -234,7 +313,11 @@ function processAcceptance(btn, handlerPath, id, modalObj) {
         alert("A connection error occurred.");
     });
 }
+
+
 </script>
+
+
 
 </body>
 
