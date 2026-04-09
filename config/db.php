@@ -16,6 +16,6 @@ try {
     die("DB Connection Failed");
 }
 
-require(__DIR__ . DIRECTORY_SEPARATOR . "src" . DIRECTORY_SEPARATOR . "helper.php");
+require(dirname(__DIR__) . DIRECTORY_SEPARATOR . "src" . DIRECTORY_SEPARATOR . "helper.php");
 
 $APP = new AppHelper($pdo);
