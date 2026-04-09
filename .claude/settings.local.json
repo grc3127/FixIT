@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(grep -A 20 \"CREATE TABLE \\\\`inventory_request\\\\`\" /d/PROJECTS/Gelo/FixIT/database/schema.sql)",
-      "Bash(grep -A 20 \"CREATE TABLE \\\\`job_request\\\\`\" /d/PROJECTS/Gelo/FixIT/database/schema.sql)",
-      "Bash(grep -A 15 \"CREATE TABLE \\\\`item\\\\`\" /d/PROJECTS/Gelo/FixIT/database/schema.sql)"
-    ]
-  }
-}
