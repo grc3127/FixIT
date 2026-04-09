@@ -93,7 +93,7 @@ include '../src/handlers/user_mgmt_data.php';
                     <h3 class="mb-0">User Management</h3>
                 </div>
                 <div class="col-sm-6 text-end">
-                    <button class="btn btn-primary btn-sm">
+                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addUserModal">
                         <i class="bi bi-person-plus-fill"></i> Add New User
                     </button>
                 </div>
@@ -151,9 +151,19 @@ include '../src/handlers/user_mgmt_data.php';
                                                     <small class="text-muted"><?php echo htmlspecialchars($user['email']); ?></small>
                                                 </div>
                                             <?php if ($config['show_edit']): ?>
-                                                <div>
-                                                    <button class="btn btn-link p-0 text-success" title="Edit User">
+                                                <div class="d-flex gap-2">
+                                                    <button class="btn btn-link p-0 text-success edit-user-btn" 
+                                                            title="Edit User"
+                                                            data-user='<?php echo json_encode($user); ?>'
+                                                            data-bs-toggle="modal" 
+                                                            data-bs-target="#editUserModal">
                                                         <i class="bi bi-pencil-square fs-5"></i>
+                                                    </button>
+                                                    <button class="btn btn-link p-0 text-danger delete-user-btn" 
+                                                            title="Delete User"
+                                                            data-id="<?php echo $user['employee_id']; ?>"
+                                                            data-name="<?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?>">
+                                                        <i class="bi bi-trash fs-5"></i>
                                                     </button>
                                                 </div>
                                             <?php endif; ?>
@@ -172,3 +182,234 @@ include '../src/handlers/user_mgmt_data.php';
         </div>
     </div>
 </main>
+
+<!-- Add User Modal -->
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="addUserForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addUserModalLabel">Add New User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label class="form-label">First Name</label>
+                            <input type="text" name="first_name" class="form-control" required>
+                        </div>
+                        <div class="col">
+                            <label class="form-label">Middle Name</label>
+                            <input type="text" name="middle_name" class="form-control">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" name="last_name" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mobile Number</label>
+                        <input type="text" name="mobile_num" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Address</label>
+                        <input type="text" name="address" class="form-control">
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label class="form-label">Department</label>
+                            <select name="dept_id" class="form-select" required>
+                                <option value="">Select Dept</option>
+                                <?php foreach ($departments as $dept): ?>
+                                    <option value="<?php echo $dept['dept_id']; ?>"><?php echo htmlspecialchars($dept['dept_name']); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label class="form-label">Role</label>
+                            <select name="role_id" class="form-select" required>
+                                <option value="">Select Role</option>
+                                <?php foreach ($roles as $id => $name): ?>
+                                    <option value="<?php echo $id; ?>"><?php echo $name; ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" name="password" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit User Modal -->
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="editUserForm">
+                <input type="hidden" name="employee_id" id="edit_employee_id">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label class="form-label">First Name</label>
+                            <input type="text" name="first_name" id="edit_first_name" class="form-control" required>
+                        </div>
+                        <div class="col">
+                            <label class="form-label">Middle Name</label>
+                            <input type="text" name="middle_name" id="edit_middle_name" class="form-control">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" name="last_name" id="edit_last_name" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" id="edit_email" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mobile Number</label>
+                        <input type="text" name="mobile_num" id="edit_mobile_num" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Address</label>
+                        <input type="text" name="address" id="edit_address" class="form-control">
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label class="form-label">Department</label>
+                            <select name="dept_id" id="edit_dept_id" class="form-select" required>
+                                <?php foreach ($departments as $dept): ?>
+                                    <option value="<?php echo $dept['dept_id']; ?>"><?php echo htmlspecialchars($dept['dept_name']); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label class="form-label">Role</label>
+                            <select name="role_id" id="edit_role_id" class="form-select" required>
+                                <?php foreach ($roles as $id => $name): ?>
+                                    <option value="<?php echo $id; ?>"><?php echo $name; ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select name="status_id" id="edit_status_id" class="form-select" required>
+                            <?php foreach ($statuses as $status): ?>
+                                <option value="<?php echo $status['status_id']; ?>"><?php echo htmlspecialchars($status['status_name']); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password (leave blank to keep current)</label>
+                        <input type="password" name="password" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Update User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add User
+    document.getElementById('addUserForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        fetch('../src/handlers/create_user.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                location.reload();
+            } else {
+                alert(data.message);
+            }
+        });
+    });
+
+    // Populate Edit Modal
+    document.querySelectorAll('.edit-user-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const user = JSON.parse(this.dataset.user);
+            document.getElementById('edit_employee_id').value = user.employee_id;
+            document.getElementById('edit_first_name').value = user.first_name;
+            document.getElementById('edit_middle_name').value = user.middle_name || '';
+            document.getElementById('edit_last_name').value = user.last_name;
+            document.getElementById('edit_email').value = user.email;
+            document.getElementById('edit_mobile_num').value = user.mobile_num || '';
+            document.getElementById('edit_address').value = user.address || '';
+            document.getElementById('edit_dept_id').value = user.dept_id;
+            document.getElementById('edit_role_id').value = user.role_id;
+            document.getElementById('edit_status_id').value = user.status_id;
+        });
+    });
+
+    // Update User
+    document.getElementById('editUserForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        fetch('../src/handlers/update_user.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                location.reload();
+            } else {
+                alert(data.message);
+            }
+        });
+    });
+
+    // Delete User
+    document.querySelectorAll('.delete-user-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const id = this.dataset.id;
+            const name = this.dataset.name;
+            if (confirm(`Are you sure you want to delete user ${name}?`)) {
+                const formData = new FormData();
+                formData.append('employee_id', id);
+                fetch('../src/handlers/delete_user.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        location.reload();
+                    } else {
+                        alert(data.message);
+                    }
+                });
+            }
+        });
+    });
+});
+</script>
