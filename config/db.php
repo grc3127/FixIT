@@ -1,9 +1,9 @@
 <?php
 $host = "localhost";
-$dbname = "try";
-$user = "root";
-$pass = "";
-$port = "";
+$dbname = "tryfix";
+$user = "try";
+$pass = "qwerasdf1234";
+$port = "3356";
 
 try {
     $pdo = new PDO(
