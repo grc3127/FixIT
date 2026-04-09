@@ -1,4 +1,8 @@
 <?php
+
+require_once __DIR__ . "/../../db.php";
+
+
 // Assuming $pdo and $loggedInEmployeeId are already defined in your session/handler
 $loggedInEmployeeId = $_SESSION['employee_id'];
 
@@ -51,5 +55,9 @@ foreach ($availableItems as $item) {
 }
 
 // Ensure $jsonArticleMap is always defined for the script tag
-$jsonArticleMap = json_encode($articleMap ?? (object)[]);
-?>
+if(!$noDisplay) {
+
+    header('Content-Type: application/json');
+    echo json_encode($articleMap ?? (object)[]);
+}
+

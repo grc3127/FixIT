@@ -277,9 +277,8 @@ if (isset($_SESSION['role_id']) && $_SESSION['role_id'] === 1):
 ?>
     <script>
     let chart;
-
     function updateChartData() {
-        fetch('../src/handlers/get_chart_data.php')
+        fetch('data/get_chart_data.php')
         .then(res => res.json())
         .then(data => {
             if (chart) {

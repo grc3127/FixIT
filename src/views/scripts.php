@@ -204,7 +204,7 @@ function processAcceptance(btn, handlerPath, id, modalObj) {
         return;
     }
 
-    fetch('../src/handlers/servreq_process.php', {
+    fetch('data/servreq_process.php', {
         method: 'POST',
         body: formData
     })
@@ -225,10 +225,14 @@ function processAcceptance(btn, handlerPath, id, modalObj) {
 </script>
 
 <script>
+    <?php
+            $noDisplay = true;
+    include(dirname(__DIR__,2) . "/public/data/service_req_data.php");
+    ?>
     if (typeof articleMap === 'undefined') {
-        var articleMap = <?= $jsonArticleMap ?>;
+        var articleMap = <?= json_encode($articleMap,true) ?>;
     } else {
-        articleMap = <?= $jsonArticleMap ?>;
+        articleMap = <?= json_encode($articleMap,true) ?>;
     }
     let activeFormId = '';
     const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
@@ -284,7 +288,7 @@ function processAcceptance(btn, handlerPath, id, modalObj) {
         const originalText = submitBtn.innerText;
         submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
 
-        fetch('../src/handlers/servreq_process.php', {
+        fetch('data/servreq_process.php', {
             method: 'POST',
             body: formData
         })

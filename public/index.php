@@ -63,28 +63,28 @@ if (array_key_exists($page, $routes)) {
     <!--begin::Fonts-->
     <link
             rel="stylesheet"
-            href="../public/css/index.css"
+            href="/css/index.css"
             media="print"
             onload="this.media='all'"/>
     <!--end::Fonts-->
     <!--begin::Third Party Plugin(OverlayScrollbars)-->
     <link
             rel="stylesheet"
-            href="../public/css/overlayscrollbars.min.css"
+            href="/css/overlayscrollbars.min.css"
             crossorigin="anonymous"/>
     <!--end::Third Party Plugin(OverlayScrollbars)-->
     <!--begin::Third Party Plugin(Bootstrap Icons)-->
     <link
             rel="stylesheet"
-            href="../public/css/bootstrap-icons.min.css"
+            href="/css/bootstrap-icons.min.css"
             crossorigin="anonymous"/>
     <!--end::Third Party Plugin(Bootstrap Icons)-->
     <!--begin::Required Plugin(AdminLTE)-->
-    <link rel="stylesheet" href="../public/css/adminlte.css"/>
+    <link rel="stylesheet" href="/css/adminlte.css"/>
     <!--end::Required Plugin(AdminLTE)-->
     <!-- apexcharts -->
 
-    <link rel="stylesheet" href="../public/css/apexcharts.css"/>
+    <link rel="stylesheet" href="/css/apexcharts.css"/>
 </head>
 
 <body class="layout-fixed sidebar-expand-lg sidebar-open bg-body-tertiary">
@@ -105,19 +105,18 @@ if (array_key_exists($page, $routes)) {
     
     ?>
 </div>
-
-
-<!--begin::Third Party Plugin(OverlayScrollbars)-->
-<script src="../public/js/overlayscrollbars.browser.es6.min.js"></script>
-<!--end::Third Party Plugin(OverlayScrollbars)--><!--begin::Required Plugin(popperjs for Bootstrap 5)-->
-<script src="../public/js/popper.min.js"></script>
-<!--end::Required Plugin(popperjs for Bootstrap 5)--><!--begin::Required Plugin(Bootstrap 5)-->
-<script src="../public/js/bootstrap.min.js"></script>
-<!--end::Required Plugin(Bootstrap 5)--><!--begin::Required Plugin(AdminLTE)-->
-<script src="../public/js/adminlte.js"></script>
-<!--end::Required Plugin(AdminLTE)--><!--begin::OverlayScrollbars Configure-->
 <!-- apexcharts -->
-<script src="../public/js/apexcharts.min.js"></script>
+<script src="/js/apexcharts.min.js"></script>
+<!--begin::Third Party Plugin(OverlayScrollbars)-->
+<script src="/js/overlayscrollbars.browser.es6.min.js"></script>
+<!--end::Third Party Plugin(OverlayScrollbars)--><!--begin::Required Plugin(popperjs for Bootstrap 5)-->
+<script src="/js/popper.min.js"></script>
+<!--end::Required Plugin(popperjs for Bootstrap 5)--><!--begin::Required Plugin(Bootstrap 5)-->
+<script src="/js/bootstrap.min.js"></script>
+<!--end::Required Plugin(Bootstrap 5)--><!--begin::Required Plugin(AdminLTE)-->
+<script src="/js/adminlte.js"></script>
+<!--end::Required Plugin(AdminLTE)--><!--begin::OverlayScrollbars Configure-->
+
 <!-- ChartJS -->
 <script>
     const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';

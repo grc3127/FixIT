@@ -61,19 +61,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="preload" href="css/adminlte.css" as="style" />
     <link
       rel="stylesheet"
-      href="../public/css/index.css"
+      href="/css/index.css"
       media="print"
       onload="this.media='all'"
     />
     
     <link
       rel="stylesheet"
-      href="../public/css/overlayscrollbars.min.css"
+      href="/css/overlayscrollbars.min.css"
     />
     
     <link
       rel="stylesheet"
-      href="../public/css/bootstrap-icons.min.css"
+      href="/css/bootstrap-icons.min.css"
     />
     
     <link rel="stylesheet" href="css/adminlte.css" />

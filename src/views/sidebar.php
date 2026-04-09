@@ -49,7 +49,7 @@ $menu_items = [
     <!--begin::Sidebar Brand-->
     <div class="sidebar-brand">
         <a href="./index.php" class="brand-link">
-            <img src="../public/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image opacity-75 shadow" />
+            <img src="/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image opacity-75 shadow" />
             <span class="brand-text fw-light">I-SeRVE</span>
         </a>
     </div>

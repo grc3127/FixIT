@@ -132,7 +132,7 @@ include '../src/handlers/job_request_data.php';
             } else {
                 foreach ($jobRequests as $row) {
                     
-                    $profilePic = !empty($row['profile_pic']) ? htmlspecialchars($row['profile_pic']) : '../public/img/profile_pic/nicolai.png';
+                    $profilePic = !empty($row['profile_pic']) ? htmlspecialchars($row['profile_pic']) : '/img/profile_pic/nicolai.png';
                     $fullName   = htmlspecialchars($row['first_name'] . ' ' . $row['last_name']);
                     $ticketID   = "jobDetails" . $row['j_ticket_id'];
                     $formattedDate = date('F d, Y', strtotime($row['created_at']));

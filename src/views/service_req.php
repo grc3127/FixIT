@@ -1,5 +1,6 @@
 <?php
-include '../src/handlers/service_req_data.php'; 
+$noDisplay = true;
+include(dirname(__DIR__,2) . "/public/data/service_req_data.php");
 
 // Prepare the JSON map safely
 $jsonArticleMap = json_encode($articleMap ?? [], JSON_FORCE_OBJECT);
