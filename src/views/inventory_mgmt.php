@@ -60,7 +60,7 @@ include dirname(__DIR__,2). '/public/data/inventory_mgmt_data.php';
                                                 <div>
                                                     <h6 class="mb-0 fw-bold">
                                                         <?php echo htmlspecialchars($item['article']); ?>
-                                                        <span class="btn btn-sm btn-<?php echo in_array($item['status_id'],[2,4]) ? 'danger' : 'secondary' ?>"><?php echo $itemStatuses[$item['status_id']]; ?>
+                                                        <span class="btn btn-sm btn-<?php echo in_array($item['status_id'],[2,4]) ? 'danger' : 'success' ?>"><?php echo $itemStatuses[$item['status_id']]; ?>
                                                     </h6>
                                                     <small class="text-muted d-block">
                                                         Property #: <?php echo htmlspecialchars($item['property_num']); ?> | 

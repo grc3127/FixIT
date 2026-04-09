@@ -1,14 +1,20 @@
 <?php
+
 require_once __DIR__ . "/../../config/db.php";
 
+
+// Assuming $pdo and $loggedInEmployeeId are already defined in your session/handler
 $loggedInEmployeeId = $_SESSION['employee_id'];
 
-// 1. Check job request status
+/**
+ * 1. CHECK JOB REQUEST STATUS (Gatekeeper Logic)
+ * We fetch the status of the most recent active/pending job.
+ */
 $stmtCheckJob = $pdo->prepare("
-    SELECT j_ticket_id, status_id, remarks
-    FROM job_request
-    WHERE requested_by_employee = ?
-    AND status_id IN (1, 2, 3)
+    SELECT j_ticket_id, status_id, remarks 
+    FROM job_request 
+    WHERE requested_by_employee = ? 
+    AND status_id IN (1, 2, 3) 
     ORDER BY created_at DESC LIMIT 1
 ");
 $stmtCheckJob->execute([$loggedInEmployeeId]);

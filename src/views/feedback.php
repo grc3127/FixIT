@@ -30,11 +30,11 @@ try {
             <div class="direct-chat-msg" style="margin-bottom: 20px;">
                 <div class="direct-chat-infos clearfix">
                     <span class="direct-chat-name float-start">
-                        <?php echo  htmlspecialchars($row['first_name'] . ' ' . $row['last_name']) ?> 
+                        <?php echo  htmlspecialchars($row['first_name'] . ' ' . $row['last_name']) ?>
                         <!-- <small class="text-muted">(ID: <?php echo  htmlspecialchars($row['employee_id']) ?>)</small> -->
                     </span>
                     <span class="direct-chat-timestamp float-end">
-                        <strong>Rating: <?php echo  htmlspecialchars($row['rating']) ?></strong> | 
+                        <strong>Rating: <?php echo  htmlspecialchars($row['rating']) ?></strong> |
                             <?php echo  date("d M g:i a", strtotime($row['updated_at'] ?? 'now')) ?>
                     </span>
                 </div>
