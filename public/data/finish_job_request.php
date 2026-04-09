@@ -12,7 +12,6 @@ if (!$ticket_id || !$remarks) {
 try {
     $sql = "UPDATE job_request 
             SET status_id = 3, 
-            
                 remarks = :remarks, 
                 updated_at = NOW() 
             WHERE j_ticket_id = :tid";

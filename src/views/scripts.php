@@ -92,7 +92,7 @@ function acceptJob(ticketId) {
 
 document.getElementById('jrConfirmBtn').addEventListener('click', function() {
     if (!selectedJobId) return;
-    processAcceptance(this, '../src/handlers/accept_job_request.php', selectedJobId, jrModal);
+    processAcceptance(this, 'data/accept_job_request.php', selectedJobId, jrModal);
 });
 
 if(document.getElementById('jrFinishRequest')) {
@@ -129,7 +129,7 @@ document.getElementById('submitFinishBtn').addEventListener('click', function() 
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Saving...';
 
-    fetch('../src/handlers/finish_job_request.php', {
+    fetch('data/finish_job_request.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `ticket_id=${encodeURIComponent(currentActiveJobTicketId)}&remarks=${encodeURIComponent(remarks)}`
