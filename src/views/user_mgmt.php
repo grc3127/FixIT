@@ -240,6 +240,13 @@ include '../src/handlers/user_mgmt_data.php';
                         </div>
                     </div>
                     <div class="mb-3">
+                        <label class="form-label">Profile Picture</label>
+                        <input type="file" id="addUserPhoto" class="form-control" accept="image/*">
+                        <div class="mt-2 text-center" style="display:none;" id="addUserCropContainer">
+                            <img id="addUserCropPreview" style="max-width: 100%;">
+                        </div>
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label">Password</label>
                         <input type="password" name="password" class="form-control" required>
                     </div>
@@ -309,6 +316,13 @@ include '../src/handlers/user_mgmt_data.php';
                         </div>
                     </div>
                     <div class="mb-3">
+                        <label class="form-label">Profile Picture (optional)</label>
+                        <input type="file" id="editUserPhoto" class="form-control" accept="image/*">
+                        <div class="mt-2 text-center" style="display:none;" id="editUserCropContainer">
+                            <img id="editUserCropPreview" style="max-width: 100%;">
+                        </div>
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label">Status</label>
                         <select name="status_id" id="edit_status_id" class="form-select" required>
                             <?php foreach ($statuses as $status): ?>
@@ -332,10 +346,60 @@ include '../src/handlers/user_mgmt_data.php';
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    let addUserCropper = null;
+    let editUserCropper = null;
+
+    function initCropper(inputId, containerId, previewId) {
+        const input = document.getElementById(inputId);
+        const container = document.getElementById(containerId);
+        const preview = document.getElementById(previewId);
+        let cropper = null;
+
+        input.addEventListener('change', function(e) {
+            const files = e.target.files;
+            if (files && files.length > 0) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    container.style.display = 'block';
+                    if (cropper) {
+                        cropper.destroy();
+                    }
+                    cropper = new Cropper(preview, {
+                        aspectRatio: 1,
+                        viewMode: 1,
+                        autoCropArea: 1,
+                    });
+                    if (inputId === 'addUserPhoto') addUserCropper = cropper;
+                    else editUserCropper = cropper;
+                };
+                reader.readAsDataURL(files[0]);
+            }
+        });
+    }
+
+    initCropper('addUserPhoto', 'addUserCropContainer', 'addUserCropPreview');
+    initCropper('editUserPhoto', 'editUserCropContainer', 'editUserCropPreview');
+
     // Add User
     document.getElementById('addUserForm').addEventListener('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(this);
+        
+        if (addUserCropper) {
+            addUserCropper.getCroppedCanvas({
+                width: 300,
+                height: 300
+            }).toBlob((blob) => {
+                formData.append('profile_pic', blob, 'profile.jpg');
+                submitAddUser(formData);
+            }, 'image/jpeg', 0.8);
+        } else {
+            submitAddUser(formData);
+        }
+    });
+
+    function submitAddUser(formData) {
         fetch('../src/handlers/create_user.php', {
             method: 'POST',
             body: formData
@@ -349,7 +413,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert(data.message);
             }
         });
-    });
+    }
 
     // Populate Edit Modal
     document.querySelectorAll('.edit-user-btn').forEach(btn => {
@@ -372,6 +436,21 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('editUserForm').addEventListener('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(this);
+
+        if (editUserCropper) {
+            editUserCropper.getCroppedCanvas({
+                width: 300,
+                height: 300
+            }).toBlob((blob) => {
+                formData.append('profile_pic', blob, 'profile.jpg');
+                submitUpdateUser(formData);
+            }, 'image/jpeg', 0.8);
+        } else {
+            submitUpdateUser(formData);
+        }
+    });
+
+    function submitUpdateUser(formData) {
         fetch('../src/handlers/update_user.php', {
             method: 'POST',
             body: formData
@@ -385,7 +464,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert(data.message);
             }
         });
-    });
+    }
 
     // Delete User
     document.querySelectorAll('.delete-user-btn').forEach(btn => {

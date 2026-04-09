@@ -42,8 +42,18 @@ try {
 
     $passwordHash = password_hash($password, PASSWORD_DEFAULT);
     
-    // Handle profile picture upload if needed (placeholder for now)
+    // Handle profile picture upload
     $profilePic = '/img/profile_pic/default.png';
+    if (isset($_FILES['profile_pic']) && $_FILES['profile_pic']['error'] === UPLOAD_ERR_OK) {
+        $uploadDir = __DIR__ . '/../../public/img/profile_pic/';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+        $fileName = uniqid('profile_') . '.jpg';
+        if (move_uploaded_file($_FILES['profile_pic']['tmp_name'], $uploadDir . $fileName)) {
+            $profilePic = '/img/profile_pic/' . $fileName;
+        }
+    }
 
     $sql = "INSERT INTO employee (
                 first_name, middle_name, last_name, email, mobile_num, 

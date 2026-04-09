@@ -158,7 +158,7 @@ document.getElementById('submitFinishBtn').addEventListener('click', function() 
 
 document.getElementById('irConfirmBtn').addEventListener('click', function() {
     if (!selectedInvId) return;
-    processAcceptance(this, '../src/handlers/accept_inv_request.php', selectedInvId, irModal);
+    processAcceptance(this, 'data/accept_inv_request.php', selectedInvId, irModal);
 });
 
 
@@ -251,9 +251,9 @@ function processAcceptance(btn, handlerPath, id, modalObj) {
             // Get the data (it might be an object or an array)
             const articles = articleMap[selectedId];
 
-            // Convert to array if it's an object, then iterate
-            Object.values(articles).forEach(article => {
-                articleSelect.add(new Option(article, article));
+            // Convert to object entries, then iterate
+            Object.entries(articles).forEach(([id, article]) => {
+                articleSelect.add(new Option(article, id));
             });
         } else {
             articleSelect.disabled = true;

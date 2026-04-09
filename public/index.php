@@ -85,6 +85,7 @@ if (array_key_exists($page, $routes)) {
     <!-- apexcharts -->
 
     <link rel="stylesheet" href="/css/apexcharts.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
 </head>
 
 <body class="layout-fixed sidebar-expand-lg sidebar-open bg-body-tertiary">
@@ -118,6 +119,7 @@ if (array_key_exists($page, $routes)) {
 <!--end::Required Plugin(AdminLTE)--><!--begin::OverlayScrollbars Configure-->
 
 <!-- ChartJS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
 <script>
     const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
     const Default = {

@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['inventory_id'])) {
                 SET status_id = 2, 
                     processed_by_employee = :eid,
                     updated_at = NOW() 
-                WHERE inventory_request_id = :iid 
+                WHERE i_ticket_id = :iid 
                 AND status_id = 1"; 
 
         $stmt = $pdo->prepare($sql);

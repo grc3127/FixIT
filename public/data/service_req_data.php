@@ -40,7 +40,7 @@ $devices = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Fetch only 'Available' items (status_id = 1)
 $itemStmt = $pdo->query("
-    SELECT i.device_id, i.article, s.status_name 
+    SELECT i.item_id, i.device_id, i.article, s.status_name 
     FROM item i
     INNER JOIN item_status s ON i.status_id = s.status_id
     WHERE i.status_id = 1 
@@ -51,7 +51,8 @@ $availableItems = $itemStmt->fetchAll(PDO::FETCH_ASSOC);
 // Group items by device_id for the JavaScript map
 $articleMap = [];
 foreach ($availableItems as $item) {
-    $articleMap[$item['device_id']][] = $item['article'];
+    // Use item_id as the key for the associative array
+    $articleMap[$item['device_id']][$item['item_id']] = $item['article'];
 }
 
 // Ensure $jsonArticleMap is always defined for the script tag

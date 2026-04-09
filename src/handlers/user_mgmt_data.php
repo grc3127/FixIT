@@ -6,9 +6,14 @@ try {
     $sql = "SELECT 
                 employee_id, 
                 first_name, 
+                middle_name,
                 last_name, 
                 email, 
+                mobile_num,
+                address,
+                dept_id,
                 role_id, 
+                status_id,
                 profile_pic 
             FROM employee 
             ORDER BY last_name ASC";

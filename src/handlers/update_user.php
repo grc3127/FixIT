@@ -69,6 +69,19 @@ try {
         'id'            => $employeeId
     ];
 
+    // Handle profile picture upload
+    if (isset($_FILES['profile_pic']) && $_FILES['profile_pic']['error'] === UPLOAD_ERR_OK) {
+        $uploadDir = __DIR__ . '/../../public/img/profile_pic/';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+        $fileName = uniqid('profile_', true) . '.jpg';
+        if (move_uploaded_file($_FILES['profile_pic']['tmp_name'], $uploadDir . $fileName)) {
+            $sql .= ", profile_pic = :profile_pic";
+            $params['profile_pic'] = '/img/profile_pic/' . $fileName;
+        }
+    }
+
     if (!empty($password)) {
         $sql .= ", password_hash = :password_hash";
         $params['password_hash'] = password_hash($password, PASSWORD_DEFAULT);

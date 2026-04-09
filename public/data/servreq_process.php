@@ -59,13 +59,13 @@ try {
     // --- CASE 2: INVENTORY REQUEST ---
     } elseif ($form_type === 'inventory_request') {
         $device_id = $_POST['device_id'] ?? '';
-        $article_name = $_POST['article_name'] ?? '';
+        $item_id = $_POST['item_id'] ?? '';
         $purpose = $_POST['invDescription'] ?? '';
 
-        $sql = "INSERT INTO inventory_request (requested_by_employee, device_id, article_name, purpose, status_id) 
+        $sql = "INSERT INTO inventory_request (requested_by_employee, item_id, `description`, status_id) 
                 VALUES (?, ?, ?, ?, ?)";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([$employee_id, $device_id, $article_name, $purpose, $status_pending]);
+        $stmt->execute([$employee_id, $item_id, $item_id, $purpose, $status_pending]);
 
         echo json_encode(['status' => 'success', 'message' => 'Inventory request submitted successfully!']);
 
