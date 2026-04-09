@@ -1,5 +1,5 @@
 <?php
-include '../src/handlers/user_mgmt_data.php';
+include 'data/user_mgmt_data.php';
 
 ?>
 
@@ -400,7 +400,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function submitAddUser(formData) {
-        fetch('../src/handlers/create_user.php', {
+        fetch('data/create_user.php', {
             method: 'POST',
             body: formData
         })
@@ -451,7 +451,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function submitUpdateUser(formData) {
-        fetch('../src/handlers/update_user.php', {
+        fetch('data/update_user.php', {
             method: 'POST',
             body: formData
         })
@@ -474,7 +474,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (confirm(`Are you sure you want to delete user ${name}?`)) {
                 const formData = new FormData();
                 formData.append('employee_id', id);
-                fetch('../src/handlers/delete_user.php', {
+                fetch('data/delete_user.php', {
                     method: 'POST',
                     body: formData
                 })
