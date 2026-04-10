@@ -59,20 +59,34 @@ include dirname(__DIR__,2). '/public/data/inventory_mgmt_data.php';
                                                 </div>
                                                 <div>
                                                     <h6 class="mb-0 fw-bold">
-                                                        <?php echo htmlspecialchars($item['article']); ?>
-                                                        <span class="btn btn-sm btn-<?php echo in_array($item['status_id'],[2,4]) ? 'danger' : 'success' ?>"><?php echo $itemStatuses[$item['status_id']]; ?>
+                                                            <?php echo htmlspecialchars($item['article']); ?>
                                                     </h6>
                                                     <small class="text-muted d-block">
                                                         Property #: <?php echo htmlspecialchars($item['property_num']); ?> | 
                                                         S/N: <?php echo htmlspecialchars($item['serial_num']); ?>
                                                     </small>
+                                                    <div>
+                                                        <?php
+                                                            $statusClasses = [
+                                                                1 => 'success',
+                                                                2 => 'warning',
+                                                                3 => 'secondary',
+                                                                4 => 'danger'
+                                                            ];
+
+                                                            $class = $statusClasses[$item['status_id']] ?? 'secondary';
+                                                        ?>
+                                                        <span class="btn btn-sm btn-<?php echo $class; ?>">
+                                                            <?php echo $itemStatuses[$item['status_id']]; ?>
+                                                        </span>
+                                                    </div>
                                                 </div>
+                                                
                                             </div>
 
                                             <div class="text-end d-flex align-items-center">
                                                 <div class="me-4 text-center">
-                                                    <span class="d-block fw-bold"><?php echo $item['quantity']; ?></span>
-                                                    <small class="text-uppercase text-muted" style="font-size: 10px;">In Stock</small>
+                                                    
                                                 </div>
                                                 
                                                 <div class="btn-group">
@@ -147,10 +161,7 @@ include dirname(__DIR__,2). '/public/data/inventory_mgmt_data.php';
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col">
-                            <label class="form-label">Quantity</label>
-                            <input type="number" name="quantity" class="form-control" value="1" min="1" required>
-                        </div>
+                        
                         <div class="col">
                             <label class="form-label">Status</label>
                             <select name="status_id" class="form-select" required>
@@ -210,10 +221,6 @@ include dirname(__DIR__,2). '/public/data/inventory_mgmt_data.php';
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col">
-                            <label class="form-label">Quantity</label>
-                            <input type="number" name="quantity" id="edit_quantity" class="form-control" min="1" required>
-                        </div>
                         <div class="col">
                             <label class="form-label">Status</label>
                             <select name="status_id" id="edit_status_id" class="form-select" required>

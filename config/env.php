@@ -10,10 +10,10 @@
 return [
     'db' => [
         'host'    => getenv('DB_HOST') ?: 'localhost',
-        'port'    => getenv('DB_PORT') ?: '3356',
-        'dbname'  => getenv('DB_NAME') ?: 'tryfix',
-        'user'    => getenv('DB_USER') ?: 'try',
-        'pass'    => getenv('DB_PASS') ?: 'qwerasdf1234',
+        'port'    => getenv('DB_PORT') ?: '',
+        'dbname'  => getenv('DB_NAME') ?: 'try',
+        'user'    => getenv('DB_USER') ?: 'root',
+        'pass'    => getenv('DB_PASS') ?: '',
         'charset' => 'utf8mb4',
     ],
     'session' => [

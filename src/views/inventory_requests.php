@@ -23,7 +23,7 @@ include '../src/handlers/inventory_request_data.php';
         <div class="row g-4">
 
             <!-- DAILY STATS -->
-            <div class="col-md-7">
+            <div class="col">
                 <div class="card h-100">
                     <div class="card-header  bg-white">
                         <h3>Daily Statistics</h3>
@@ -131,7 +131,6 @@ include '../src/handlers/inventory_request_data.php';
                 echo '<p class="text-center text-muted">No new inventory requests found.</p>';
             } else {
                 foreach ($inventoryRequests as $row) {
-
                     $profilePic = !empty($row['profile_pic']) ? htmlspecialchars($row['profile_pic']) : 'dist/img/user-default.jpg';
                     $fullName   = htmlspecialchars($row['first_name'] . ' ' . $row['last_name']);
                     
@@ -140,86 +139,79 @@ include '../src/handlers/inventory_request_data.php';
                     
                     // Use updated_at (which we added back to the SELECT)
                     $formattedDateTime = date('M d, Y | h:i A', strtotime($row['updated_at']));
-                    
+                
                     $deptName    = htmlspecialchars($row['dept_name']);
                     $article     = htmlspecialchars($row['article']);
                     $description = htmlspecialchars($row['description']);
-
-                    /* if ($hasActiveTask) {
-                        $buttonClass = "btn btn-warning border rounded p-2 text-muted opacity-50";
-                        $buttonStyle = "cursor:not-allowed;width:40px;height:40px;display:flex;align-items:center;justify-content:center;";
-                        $onclick = "";
-                    } else */ 
+                   
             ?>
 
-                <div class="card mb-2 border shadow-none">
-
-                    <div class="card-body d-flex justify-content-between align-items-center">
-                        <div class="d-flex align-items-center" 
-                            role="button" 
-                            data-bs-toggle="collapse" 
-                            data-bs-target="#<?php echo  $ticketID ?>">
-                            <img src="<?php echo  $profilePic ?>" class="rounded-circle border me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                
+                <div class="card mb-2 border shadow-none position-relative">
+                    <div class="card-body d-flex justify-content-between align-items-center" 
+                        role="button" 
+                        data-bs-toggle="collapse" 
+                        data-bs-target="#collapse-<?php echo $ticketID ?>" 
+                        aria-expanded="false" 
+                        style="cursor: pointer;">
+                        
+                        <div class="d-flex align-items-center col">
+                            <img src="<?php echo $profilePic ?>" class="rounded-circle border me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                            <strong><?php echo $fullName ?></strong>
                         </div>
-                        <div class="col">
-                            <strong><?php echo  $fullName ?></strong>
+                        
+                        <div class=" px-3 text-muted">
+                            <i class="bi <?php echo $row['status_id'] == 1 ? 'bi bi-box-arrow-left' : 'bi bi-box-arrow-in-right'; ?>"></i>
                         </div>
-                       
                     </div>
 
-                    <div class="collapse" id="<?php echo  $ticketID ?>">
-
+                    <div class="collapse" id="collapse-<?php echo $ticketID ?>">
                         <div class="card-footer bg-white border-top p-3">
+                            
                             <div class="row mb-2 align-items-baseline">
                                 <div class="col-auto text-muted" style="width: 30px;"><i class="bi bi-calendar3"></i></div>
                                 <div class="col-auto px-1" style="width: 120px;"><strong>Date and Time</strong></div>
                                 <div class="col-auto px-1">:</div>
-                                <div class="col"><?php echo  $formattedDateTime ?></div>
+                                <div class="col"><?php echo $formattedDateTime ?></div>
                             </div>
                             <div class="row mb-2 align-items-baseline">
                                 <div class="col-auto text-muted" style="width: 30px;"><i class="bi bi-building"></i></div>
                                 <div class="col-auto px-1" style="width: 120px;"><strong>Department</strong></div>
                                 <div class="col-auto px-1">:</div>
-                                <div class="col"><?php echo  $deptName ?></div>
+                                <div class="col"><?php echo $deptName ?></div>
                             </div>
                             <div class="row mb-2 align-items-baseline">
-                                <div class="col-auto text-muted" style="width: 30px;"><i class="bi bi-building"></i></div>
+                                <div class="col-auto text-muted" style="width: 30px;"><i class="bi bi-box-seam"></i></div>
                                 <div class="col-auto px-1" style="width: 120px;"><strong>Item</strong></div>
                                 <div class="col-auto px-1">:</div>
-                                <div class="col"><strong><?php echo  $article ?></strong></div>
+                                <div class="col"><strong><?php echo $article ?></strong></div>
                             </div>
-                            <div class="row align-items-baseline">
+                            <div class="row mb-3 align-items-baseline">
                                 <div class="col-auto text-muted" style="width: 30px;"><i class="bi bi-chat-left-text"></i></div>
                                 <div class="col-auto px-1" style="width: 120px;"><strong>Description</strong></div>
                                 <div class="col-auto px-1">:</div>
-                                <div class="col"><?php echo  $description ?></div>
+                                <div class="col"><?php echo $description ?></div>
                             </div>
-                            <div class="row align-items-baseline">
-                                <?php
-                                if($row['status_id'] == 1){
-                                    ?>
-                                    <div class="btn btn-success border rounded p-4" onclick="event.stopPropagation(); acceptInventory('<?php echo (int)$row['i_ticket_id']; ?>')">
-                                        Accept
-                                    </div>
-                                   <?php
-                                }   else{
-                                    ?>
-                                    <div class="btn btn-primary border rounded p-4" onclick="event.stopPropagation(); returnInventory(this,'<?php echo (int)$row['i_ticket_id']; ?>')">
-                                        Return
-                                    </div>
-                                <?php
-                                }
 
-                                ?>
-                                
-                                
+                            <div class="row">
+                                <div class="col">
+                                    <?php if($row['status_id'] == 1): ?>
+                                        <button class="btn btn-success w-100 py-2" 
+                                                onclick="event.stopPropagation(); acceptInventory(<?php echo (int)$row['i_ticket_id']; ?>)">
+                                            <i class="bi bi-check-lg me-1"></i> Accept
+                                        </button>
+                                    <?php else: ?>
+                                        <button class="btn btn-primary w-100 py-2" 
+                                                onclick="event.stopPropagation(); returnInventory(this, <?php echo (int)$row['i_ticket_id']; ?>)">
+                                            <i class="bi bi-arrow-left-right me-1"></i> Return
+                                        </button>
+                                    <?php endif; ?>
+                                </div>
                             </div>
 
                         </div>
                     </div>
-
                 </div>
-                
             <?php
                 }
             }

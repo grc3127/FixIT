@@ -24,7 +24,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 ':article' => trim($_POST['article'] ?? ''),
                 ':property_num' => trim($_POST['property_num'] ?? ''),
                 ':serial_num' => trim($_POST['serial_num'] ?? ''),
-                ':quantity' => (int)($_POST['quantity'] ?? 1),
                 ':date_acquired' => $_POST['date_acquired'] ?: null
             ]);
             $response = ['success' => true, 'message' => 'Item added successfully'];
@@ -53,7 +52,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     ':article' => trim($_POST['article'] ?? ''),
                     ':property_num' => trim($_POST['property_num'] ?? ''),
                     ':serial_num' => trim($_POST['serial_num'] ?? ''),
-                    ':quantity' => (int)($_POST['quantity'] ?? 1),
                     ':date_acquired' => $_POST['date_acquired'] ?: null,
                     ':item_id' => $item_id
                 ]);
