@@ -117,6 +117,7 @@ include dirname(__DIR__,2). '/public/data/inventory_mgmt_data.php';
         <div class="modal-content">
             <form id="addItemForm">
                 <input type="hidden" name="action" value="add">
+                <?php echo  Security::csrfField() ?>
                 <div class="modal-header">
                     <h5 class="modal-title" id="addItemModalLabel">Add New Item</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -180,6 +181,7 @@ include dirname(__DIR__,2). '/public/data/inventory_mgmt_data.php';
             <form id="editItemForm">
                 <input type="hidden" name="action" value="edit">
                 <input type="hidden" name="item_id" id="edit_item_id">
+                <?php echo  Security::csrfField() ?>
                 <div class="modal-header">
                     <h5 class="modal-title" id="editItemModalLabel">Edit Item</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -286,6 +288,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const formData = new FormData();
                 formData.append('action', 'delete');
                 formData.append('item_id', id);
+                formData.append('csrf_token', CSRF_TOKEN);
                 fetch('data/inventory_mgmt_data.php', {
                     method: 'POST',
                     body: formData

@@ -71,4 +71,3 @@ $jobRequests = $pdo->query($sqlQueue)->fetchAll();
 
 // Flag to prevent technician from taking more than one job at a time
 $hasActiveTask = ($countPending > 0);
-?>

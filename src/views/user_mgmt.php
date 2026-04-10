@@ -188,6 +188,7 @@ include '../src/handlers/user_mgmt_data.php';
     <div class="modal-dialog">
         <div class="modal-content">
             <form id="addUserForm">
+                <?php echo  Security::csrfField() ?>
                 <div class="modal-header">
                     <h5 class="modal-title" id="addUserModalLabel">Add New User</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -265,6 +266,7 @@ include '../src/handlers/user_mgmt_data.php';
     <div class="modal-dialog">
         <div class="modal-content">
             <form id="editUserForm">
+                <?php echo  Security::csrfField() ?>
                 <input type="hidden" name="employee_id" id="edit_employee_id">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
@@ -474,6 +476,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (confirm(`Are you sure you want to delete user ${name}?`)) {
                 const formData = new FormData();
                 formData.append('employee_id', id);
+                formData.append('csrf_token', CSRF_TOKEN);
                 fetch('data/delete_user.php', {
                     method: 'POST',
                     body: formData

@@ -22,7 +22,7 @@ $jsonArticleMap = json_encode($articleMap ?? [], JSON_FORCE_OBJECT);
             <div class="row g-4">
                 <!-- Job Request -->
                 <div class="col-12 col-xl-6">
-                    <div class="card h-100 shadow-sm border-0 text-start <?= $hasActiveJob ? 'opacity-75' : '' ?>">
+                    <div class="card h-100 shadow-sm border-0 text-start <?php echo  $hasActiveJob ? 'opacity-75' : '' ?>">
                         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                             <div class="col">
                                 <h3 class="card-title mt-1">Job Request</h3>
@@ -35,7 +35,7 @@ $jsonArticleMap = json_encode($articleMap ?? [], JSON_FORCE_OBJECT);
                         </div>
                         
                         <form id="jobRequestForm">
-                            <fieldset <?= $hasActiveJob ? 'disabled' : '' ?>> <input type="hidden" name="form_type" value="job_request">
+                            <fieldset <?php echo  $hasActiveJob ? 'disabled' : '' ?>> <input type="hidden" name="form_type" value="job_request">
                                 <div class="card-body p-2">
                                     <?php if ($hasActiveJob): ?>
                                         <div class="alert alert-info py-2 small">
@@ -62,8 +62,8 @@ $jsonArticleMap = json_encode($articleMap ?? [], JSON_FORCE_OBJECT);
                                 <div class="card-footer bg-white border-top-0 p-2">
                                     <button type="button" class="btn btn-primary btn-lg w-100 py-3 fs-5" 
                                             onclick="confirmSubmission('job')" 
-                                            <?= $hasActiveJob ? 'disabled' : '' ?>>
-                                        <?= $hasActiveJob ? 'Submission Locked' : 'Submit Job Request' ?>
+                                            <?php echo  $hasActiveJob ? 'disabled' : '' ?>>
+                                        <?php echo  $hasActiveJob ? 'Submission Locked' : 'Submit Job Request' ?>
                                     </button>
                                 </div>
                             </fieldset>
@@ -73,7 +73,7 @@ $jsonArticleMap = json_encode($articleMap ?? [], JSON_FORCE_OBJECT);
 
                 <!-- Inventory Request -->
                 <div class="col-12 col-xl-6">
-                    <div class="card h-100 shadow-sm border-0 text-start <?= $hasActiveInv ? 'opacity-75' : '' ?>">
+                    <div class="card h-100 shadow-sm border-0 text-start <?php echo  $hasActiveInv ? 'opacity-75' : '' ?>">
                         <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
                             <div class="col">
                                 <h3 class="card-title mt-1">Inventory Request</h3>
@@ -86,7 +86,7 @@ $jsonArticleMap = json_encode($articleMap ?? [], JSON_FORCE_OBJECT);
                         </div>
 
                         <form id="inventoryRequestForm">
-                            <fieldset <?= $hasActiveInv ? 'disabled' : '' ?>>
+                            <fieldset <?php echo  $hasActiveInv ? 'disabled' : '' ?>>
                                 <input type="hidden" name="form_type" value="inventory_request">
                                 <div class="card-body p-2">
                                     <?php if ($hasActiveInv): ?>
@@ -100,7 +100,7 @@ $jsonArticleMap = json_encode($articleMap ?? [], JSON_FORCE_OBJECT);
                                         <select id="deviceSelect" name="device_id" class="form-select form-select-lg border-2 py-3" onchange="updateArticles()" required>
                                             <option selected disabled value="">Select Device...</option>
                                             <?php foreach ($devices as $device): ?>
-                                                <option value="<?= $device['device_id'] ?>"><?= $device['device_name'] ?></option>
+                                                <option value="<?php echo  $device['device_id'] ?>"><?php echo  $device['device_name'] ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
@@ -118,8 +118,8 @@ $jsonArticleMap = json_encode($articleMap ?? [], JSON_FORCE_OBJECT);
                                 <div class="card-footer bg-white border-top-0 p-4">
                                     <button type="button" class="btn btn-success btn-lg w-100 py-3 fs-5" 
                                             onclick="confirmSubmission('inventory')"
-                                            <?= $hasActiveInv ? 'disabled' : '' ?>>
-                                        <?= $hasActiveInv ? 'Submission Locked' : 'Submit Inventory Request' ?>
+                                            <?php echo  $hasActiveInv ? 'disabled' : '' ?>>
+                                        <?php echo  $hasActiveInv ? 'Submission Locked' : 'Submit Inventory Request' ?>
                                     </button>
                                 </div>
                             </fieldset>

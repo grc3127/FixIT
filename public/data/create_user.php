@@ -1,14 +1,13 @@
 <?php
-require_once __DIR__ . "/../../config/db.php";
+require_once __DIR__ . "/../../config/bootstrap.php";
 
 header('Content-Type: application/json');
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    echo json_encode(['success' => false, 'message' => 'Invalid request method.']);
-    exit;
-}
+Security::requireAuth();
+Security::requireRole([1]); // Admin only
+Security::requirePost();
+Security::requireCsrf();
 
-// Basic input validation
 $firstName  = trim($_POST['first_name'] ?? '');
 $middleName = trim($_POST['middle_name'] ?? '');
 $lastName   = trim($_POST['last_name'] ?? '');
@@ -21,48 +20,58 @@ $statusId   = (int)($_POST['status_id'] ?? 1);
 $password   = $_POST['password'] ?? '';
 
 if (empty($firstName) || empty($lastName) || empty($email) || empty($password) || empty($deptId) || empty($roleId)) {
-    echo json_encode(['success' => false, 'message' => 'Please fill in all required fields.']);
-    exit;
+    Security::jsonError('Please fill in all required fields.');
 }
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    echo json_encode(['success' => false, 'message' => 'Invalid email format.']);
-    exit;
+    Security::jsonError('Invalid email format.');
+}
+
+if (strlen($password) < 8) {
+    Security::jsonError('Password must be at least 8 characters.');
 }
 
 try {
-    // Check if email already exists
-    $checkSql = "SELECT COUNT(*) FROM employee WHERE email = :email";
-    $checkStmt = $pdo->prepare($checkSql);
+    $checkStmt = $pdo->prepare("SELECT COUNT(*) FROM employee WHERE email = :email");
     $checkStmt->execute(['email' => $email]);
     if ($checkStmt->fetchColumn() > 0) {
-        echo json_encode(['success' => false, 'message' => 'Email already registered.']);
-        exit;
+        Security::jsonError('Email already registered.');
     }
 
     $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-    
+
     // Handle profile picture upload
     $profilePic = '/img/profile_pic/default.png';
     if (isset($_FILES['profile_pic']) && $_FILES['profile_pic']['error'] === UPLOAD_ERR_OK) {
-        $uploadDir = __DIR__ . '/../../public/img/profile_pic/';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
-        }
-        $fileName = uniqid('profile_') . '.jpg';
-        if (move_uploaded_file($_FILES['profile_pic']['tmp_name'], $uploadDir . $fileName)) {
-            $profilePic = '/img/profile_pic/' . $fileName;
+        $uploadConfig = $envConfig['upload'];
+        $validTmp = Security::validateUpload($_FILES['profile_pic'], $uploadConfig);
+        if ($validTmp) {
+            $uploadDir = __DIR__ . '/../img/profile_pic/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+            $ext = '.jpg';
+            $finfo = new finfo(FILEINFO_MIME_TYPE);
+            $mime = $finfo->file($validTmp);
+            if ($mime === 'image/png') $ext = '.png';
+            elseif ($mime === 'image/gif') $ext = '.gif';
+            elseif ($mime === 'image/webp') $ext = '.webp';
+
+            $fileName = uniqid('profile_', true) . $ext;
+            if (move_uploaded_file($validTmp, $uploadDir . $fileName)) {
+                $profilePic = '/img/profile_pic/' . $fileName;
+            }
         }
     }
 
     $sql = "INSERT INTO employee (
-                first_name, middle_name, last_name, email, mobile_num, 
+                first_name, middle_name, last_name, email, mobile_num,
                 address, dept_id, role_id, status_id, password_hash, profile_pic
             ) VALUES (
-                :first_name, :middle_name, :last_name, :email, :mobile_num, 
+                :first_name, :middle_name, :last_name, :email, :mobile_num,
                 :address, :dept_id, :role_id, :status_id, :password_hash, :profile_pic
             )";
-    
+
     $stmt = $pdo->prepare($sql);
     $success = $stmt->execute([
         'first_name'    => $firstName,
@@ -81,9 +90,9 @@ try {
     if ($success) {
         echo json_encode(['success' => true, 'message' => 'User created successfully.']);
     } else {
-        echo json_encode(['success' => false, 'message' => 'Failed to create user.']);
+        Security::jsonError('Failed to create user.');
     }
 
 } catch (PDOException $e) {
-    echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
+    Security::jsonError('A database error occurred.', 'Create User Error: ' . $e->getMessage());
 }

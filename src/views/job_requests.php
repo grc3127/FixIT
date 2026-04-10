@@ -34,21 +34,21 @@ include '../src/handlers/job_request_data.php';
                         <div class="row h-100">
                             <div class="col-md-4">
                                 <div class="small-box text-bg-danger p-3 rounded-3 h-100">
-                                    <h4 class="fw-bold"><?=  $countNew ?></h4><br>
+                                    <h4 class="fw-bold"><?php echo   $countNew ?></h4><br>
                                     <p class="m-0" style="font-size: 2vw;">New Job<br>Requests</p>
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="small-box text-bg-warning p-3 rounded-3 text-white h-100">
-                                    <h4 class="fw-bold"><?=  $countPending ?></h4><br>
+                                    <h4 class="fw-bold"><?php echo   $countPending ?></h4><br>
                                     <p class="m-0" style="font-size: 2vw;">Pending Job<br>Requests</p>
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="small-box text-bg-success p-3 rounded-3 h-100">
-                                    <h4 class="fw-bold"><?=  $countFinished ?></h4><br>
+                                    <h4 class="fw-bold"><?php echo   $countFinished ?></h4><br>
                                     <p class="m-0" style="font-size: 2vw;">Finished Job<br>Requests</p>
                                 </div>
                             </div>
@@ -84,13 +84,13 @@ include '../src/handlers/job_request_data.php';
 
                     <div class="card-body">
                         <div class="d-flex">
-                            <img src="<?= $aProfilePic ?>" class="rounded-circle me-3" style="width:80px;height:80px;object-fit:cover;">
+                            <img src="<?php echo  $aProfilePic ?>" class="rounded-circle me-3" style="width:80px;height:80px;object-fit:cover;">
                             <div>
-                                <p><strong>Name:</strong> <?= $aFullName ?></p>
-                                <p><strong>Date:</strong> <?= $aDate ?></p>
-                                <p><strong>Department:</strong> <?= $aDept ?></p>
-                                <p><strong>Department:</strong> <?= $aType ?></p>
-                                <p><strong>Description:</strong> <?= $aDesc ?></p>
+                                <p><strong>Name:</strong> <?php echo  $aFullName ?></p>
+                                <p><strong>Date:</strong> <?php echo  $aDate ?></p>
+                                <p><strong>Department:</strong> <?php echo  $aDept ?></p>
+                                <p><strong>Department:</strong> <?php echo  $aType ?></p>
+                                <p><strong>Description:</strong> <?php echo  $aDesc ?></p>
                             </div>
                         </div>
                     </div>
@@ -157,43 +157,43 @@ include '../src/handlers/job_request_data.php';
                             <div class="d-flex align-items-center" 
                                 role="button" 
                                 data-bs-toggle="collapse" 
-                                data-bs-target="#<?= $ticketID ?>">
-                            <img src="<?= $profilePic ?>" class="rounded-circle border me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                                data-bs-target="#<?php echo  $ticketID ?>">
+                            <img src="<?php echo  $profilePic ?>" class="rounded-circle border me-3" style="width: 50px; height: 50px; object-fit: cover;">
                         </div>
                         <div class="col">
-                            <strong><?= $fullName ?></strong>
+                            <strong><?php echo  $fullName ?></strong>
                         </div>
-                        <div class="<?= $buttonClass ?>" style="<?= $buttonStyle ?>" <?= $onclick ?>>
+                        <div class="<?php echo  $buttonClass ?>" style="<?php echo  $buttonStyle ?>" <?php echo  $onclick ?>>
                             <i class="bi bi-check-lg"></i>
                         </div>
                     </div>
 
-                    <div class="collapse" id="<?= $ticketID ?>">
+                    <div class="collapse" id="<?php echo  $ticketID ?>">
 
                         <div class="card-footer bg-white border-top p-3">
                             <div class="row mb-2 align-items-baseline">
                                 <div class="col-auto text-muted" style="width: 30px;"><i class="bi bi-calendar3"></i></div>
                                 <div class="col-auto px-1" style="width: 120px;"><strong>Date and Time</strong></div>
                                 <div class="col-auto px-1">:</div>
-                                <div class="col"><?= $formattedDate ?></div>
+                                <div class="col"><?php echo  $formattedDate ?></div>
                             </div>
                             <div class="row mb-2 align-items-baseline">
                                 <div class="col-auto text-muted" style="width: 30px;"><i class="bi bi-building"></i></div>
                                 <div class="col-auto px-1" style="width: 120px;"><strong>Department</strong></div>
                                 <div class="col-auto px-1">:</div>
-                                <div class="col"><?= $deptName ?></div>
+                                <div class="col"><?php echo  $deptName ?></div>
                             </div>
                             <div class="row mb-2 align-items-baseline">
                                 <div class="col-auto text-muted" style="width: 30px;"><i class="bi bi-building"></i></div>
                                 <div class="col-auto px-1" style="width: 120px;"><strong>Type</strong></div>
                                 <div class="col-auto px-1">:</div>
-                                <div class="col"><?= $rType ?></div>
+                                <div class="col"><?php echo  $rType ?></div>
                             </div>
                             <div class="row align-items-baseline">
                                 <div class="col-auto text-muted" style="width: 30px;"><i class="bi bi-chat-left-text"></i></div>
                                 <div class="col-auto px-1" style="width: 120px;"><strong>Description</strong></div>
                                 <div class="col-auto px-1">:</div>
-                                <div class="col"><?= $description ?></div>
+                                <div class="col"><?php echo  $description ?></div>
                             </div>
 
                         </div>
@@ -215,6 +215,6 @@ include '../src/handlers/job_request_data.php';
 
 <script>
     // DEFINE THIS FIRST before the rest of the logic
-    const currentActiveJobTicketId = "<?php echo isset($activeJob['j_ticket_id']) ? $activeJob['j_ticket_id'] : ''; ?>";
+    const currentActiveJobTicketId = "<?php echo isset($activeJob['j_ticket_id']) ? (int)$activeJob['j_ticket_id'] : ''; ?>";
     console.log("Active Ticket ID set to:", currentActiveJobTicketId); // Debugging line
 </script>

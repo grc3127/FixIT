@@ -1,46 +1,40 @@
 <?php
-session_start();
-require_once __DIR__ . "/../../config/db.php";
+require_once __DIR__ . "/../../config/bootstrap.php";
 
 header('Content-Type: application/json');
 
-// Check if the user is logged in
-if (!isset($_SESSION['employee_id'])) {
-    echo json_encode(['success' => false, 'message' => 'Unauthorized access.']);
-    exit;
+Security::requireAuth();
+Security::requireRole([1, 2]); // Admin + Technical
+Security::requirePost();
+Security::requireCsrf();
+
+$inventoryId = (int)($_POST['ticket_id'] ?? 0);
+if ($inventoryId <= 0) {
+    Security::jsonError('Invalid request ID.');
 }
-// error_log(print_r($_POST,true));
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ticket_id'])) {
-    $inventoryId = $_POST['ticket_id'];
-    $employeeId = $_SESSION['employee_id']; 
 
-    try {
-        // 1. Update the inventory request status
-        // status_id = 1 (New/Pending), status_id = 2 (Approved/In Progress)
-        $sql = "UPDATE inventory_request 
-                SET status_id = 2, 
-                    given_by_employee = :eid,
-                    updated_at = NOW() 
-                WHERE i_ticket_id = :iid 
-                AND status_id = 1"; 
+$employeeId = $_SESSION['employee_id'];
 
-        $stmt = $pdo->prepare($sql);
-        $result = $stmt->execute([
-            'eid' => $employeeId,
-            'iid' => $inventoryId
-        ]);
+try {
+    $sql = "UPDATE inventory_request
+            SET status_id = 2,
+                given_by_employee = :eid,
+                updated_at = NOW()
+            WHERE i_ticket_id = :iid
+            AND status_id = 1";
 
-        if ($stmt->rowCount() > 0) {
-            echo json_encode(['success' => true, 'message' => 'Inventory request accepted.']);
-        } else {
-            // This occurs if the request was already handled or doesn't exist
-            echo json_encode(['success' => false, 'message' => 'Request already processed or unavailable.']);
-        }
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([
+        'eid' => $employeeId,
+        'iid' => $inventoryId
+    ]);
 
-    } catch (PDOException $e) {
-        // Use a generic message in production for security, but $e->getMessage() is fine for debugging
-        echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
+    if ($stmt->rowCount() > 0) {
+        echo json_encode(['success' => true, 'message' => 'Inventory request accepted.']);
+    } else {
+        Security::jsonError('Request already processed or unavailable.');
     }
-} else {
-    echo json_encode(['success' => false, 'message' => 'Invalid request parameters.']);
+
+} catch (PDOException $e) {
+    Security::jsonError('A database error occurred.', 'Accept Inventory Error: ' . $e->getMessage());
 }

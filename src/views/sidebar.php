@@ -67,9 +67,9 @@ $menu_items = [
                             $isActive = ($current_page == $page_key) ? 'active' : '';
                     ?>
                         <li class="nav-item">
-                            <a href="index.php?page=<?= $page_key ?>" class="nav-link <?= $isActive ?>">
-                                <i class="nav-icon bi <?= $item['icon'] ?>"></i>
-                                <p><?= $item['label'] ?></p>
+                            <a href="index.php?page=<?php echo  $page_key ?>" class="nav-link <?php echo  $isActive ?>">
+                                <i class="nav-icon bi <?php echo  $item['icon'] ?>"></i>
+                                <p><?php echo  $item['label'] ?></p>
                             </a>
                         </li>
                     <?php endif; ?>

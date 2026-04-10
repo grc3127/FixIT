@@ -1,17 +1,16 @@
 <?php
-require_once __DIR__ . "/../../config/db.php";
+require_once __DIR__ . "/../../config/bootstrap.php";
 
 header('Content-Type: application/json');
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    echo json_encode(['success' => false, 'message' => 'Invalid request method.']);
-    exit;
-}
+Security::requireAuth();
+Security::requireRole([1]); // Admin only
+Security::requirePost();
+Security::requireCsrf();
 
 $employeeId = (int)($_POST['employee_id'] ?? 0);
 if ($employeeId <= 0) {
-    echo json_encode(['success' => false, 'message' => 'Invalid User ID.']);
-    exit;
+    Security::jsonError('Invalid User ID.');
 }
 
 $firstName  = trim($_POST['first_name'] ?? '');
@@ -26,36 +25,31 @@ $statusId   = (int)($_POST['status_id'] ?? 0);
 $password   = $_POST['password'] ?? '';
 
 if (empty($firstName) || empty($lastName) || empty($email) || empty($deptId) || empty($roleId) || empty($statusId)) {
-    echo json_encode(['success' => false, 'message' => 'Please fill in all required fields.']);
-    exit;
+    Security::jsonError('Please fill in all required fields.');
 }
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    echo json_encode(['success' => false, 'message' => 'Invalid email format.']);
-    exit;
+    Security::jsonError('Invalid email format.');
 }
 
 try {
-    // Check if email already exists for another user
-    $checkSql = "SELECT COUNT(*) FROM employee WHERE email = :email AND employee_id != :id";
-    $checkStmt = $pdo->prepare($checkSql);
+    $checkStmt = $pdo->prepare("SELECT COUNT(*) FROM employee WHERE email = :email AND employee_id != :id");
     $checkStmt->execute(['email' => $email, 'id' => $employeeId]);
     if ($checkStmt->fetchColumn() > 0) {
-        echo json_encode(['success' => false, 'message' => 'Email already registered.']);
-        exit;
+        Security::jsonError('Email already registered.');
     }
 
-    $sql = "UPDATE employee SET 
-                first_name = :first_name, 
-                middle_name = :middle_name, 
-                last_name = :last_name, 
-                email = :email, 
-                mobile_num = :mobile_num, 
-                address = :address, 
-                dept_id = :dept_id, 
-                role_id = :role_id, 
+    $sql = "UPDATE employee SET
+                first_name = :first_name,
+                middle_name = :middle_name,
+                last_name = :last_name,
+                email = :email,
+                mobile_num = :mobile_num,
+                address = :address,
+                dept_id = :dept_id,
+                role_id = :role_id,
                 status_id = :status_id";
-    
+
     $params = [
         'first_name'    => $firstName,
         'middle_name'   => $middleName ?: null,
@@ -71,33 +65,47 @@ try {
 
     // Handle profile picture upload
     if (isset($_FILES['profile_pic']) && $_FILES['profile_pic']['error'] === UPLOAD_ERR_OK) {
-        $uploadDir = __DIR__ . '/../../public/img/profile_pic/';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
-        }
-        $fileName = uniqid('profile_', true) . '.jpg';
-        if (move_uploaded_file($_FILES['profile_pic']['tmp_name'], $uploadDir . $fileName)) {
-            $sql .= ", profile_pic = :profile_pic";
-            $params['profile_pic'] = '/img/profile_pic/' . $fileName;
+        $uploadConfig = $envConfig['upload'];
+        $validTmp = Security::validateUpload($_FILES['profile_pic'], $uploadConfig);
+        if ($validTmp) {
+            $uploadDir = __DIR__ . '/../img/profile_pic/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+            $ext = '.jpg';
+            $finfo = new finfo(FILEINFO_MIME_TYPE);
+            $mime = $finfo->file($validTmp);
+            if ($mime === 'image/png') $ext = '.png';
+            elseif ($mime === 'image/gif') $ext = '.gif';
+            elseif ($mime === 'image/webp') $ext = '.webp';
+
+            $fileName = uniqid('profile_', true) . $ext;
+            if (move_uploaded_file($validTmp, $uploadDir . $fileName)) {
+                $sql .= ", profile_pic = :profile_pic";
+                $params['profile_pic'] = '/img/profile_pic/' . $fileName;
+            }
         }
     }
 
     if (!empty($password)) {
+        if (strlen($password) < 8) {
+            Security::jsonError('Password must be at least 8 characters.');
+        }
         $sql .= ", password_hash = :password_hash";
         $params['password_hash'] = password_hash($password, PASSWORD_DEFAULT);
     }
 
     $sql .= " WHERE employee_id = :id";
-    
+
     $stmt = $pdo->prepare($sql);
     $success = $stmt->execute($params);
 
     if ($success) {
         echo json_encode(['success' => true, 'message' => 'User updated successfully.']);
     } else {
-        echo json_encode(['success' => false, 'message' => 'Failed to update user.']);
+        Security::jsonError('Failed to update user.');
     }
 
 } catch (PDOException $e) {
-    echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
+    Security::jsonError('A database error occurred.', 'Update User Error: ' . $e->getMessage());
 }

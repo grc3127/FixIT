@@ -32,21 +32,21 @@ include '../src/handlers/inventory_request_data.php';
                         <div class="row h-100">
                             <div class="col-md-4">
                                 <div class="small-box text-bg-danger p-3 rounded-3 h-100">
-                                    <h4 class="fw-bold"><?=  $countNew ?></h4>
+                                    <h4 class="fw-bold"><?php echo   $countNew ?></h4>
                                     <p class="m-0" style="font-size: 1.5vw;">New Inventory<br>Requests</p>
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="small-box text-bg-warning p-3 rounded-3 text-white h-100">
-                                    <h4 class="fw-bold"><?=  $countPending ?></h4>
+                                    <h4 class="fw-bold"><?php echo   $countPending ?></h4>
                                     <p class="m-0" style="font-size: 1.5vw;">Pending Inventory<br>Requests</p>
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="small-box text-bg-success p-3 rounded-3 h-100">
-                                    <h4 class="fw-bold"><?=  $countFinished ?></h4>
+                                    <h4 class="fw-bold"><?php echo   $countFinished ?></h4>
                                     <p class="m-0" style="font-size: 1.5vw;">Finished Inventory<br>Requests</p>
                                 </div>
                             </div>
@@ -84,13 +84,13 @@ include '../src/handlers/inventory_request_data.php';
 
                     <div class="card-body">
                         <div class="d-flex">
-                            <img src="<?= $aProfilePic ?>" class="rounded-circle me-3" style="width:80px;height:80px;object-fit:cover;">
+                            <img src="<?php echo  $aProfilePic ?>" class="rounded-circle me-3" style="width:80px;height:80px;object-fit:cover;">
                             <div>
-                                <p><strong>Name:</strong> <?= $aFullName ?></p>
-                                <p><strong>Date:</strong> <?= $aDate ?></p>
-                                <p><strong>Department:</strong> <?= $aDept ?></p>
-                                <p><strong>Item: <?= $aArticle ?></strong></p>
-                                <p><strong>Description:</strong> <?= $aDesc ?></p>
+                                <p><strong>Name:</strong> <?php echo  $aFullName ?></p>
+                                <p><strong>Date:</strong> <?php echo  $aDate ?></p>
+                                <p><strong>Department:</strong> <?php echo  $aDept ?></p>
+                                <p><strong>Item: <?php echo  $aArticle ?></strong></p>
+                                <p><strong>Description:</strong> <?php echo  $aDesc ?></p>
                             </div>
                         </div>
                     </div>
@@ -158,53 +158,53 @@ include '../src/handlers/inventory_request_data.php';
                         <div class="d-flex align-items-center" 
                             role="button" 
                             data-bs-toggle="collapse" 
-                            data-bs-target="#<?= $ticketID ?>">
-                            <img src="<?= $profilePic ?>" class="rounded-circle border me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                            data-bs-target="#<?php echo  $ticketID ?>">
+                            <img src="<?php echo  $profilePic ?>" class="rounded-circle border me-3" style="width: 50px; height: 50px; object-fit: cover;">
                         </div>
                         <div class="col">
-                            <strong><?= $fullName ?></strong>
+                            <strong><?php echo  $fullName ?></strong>
                         </div>
                        
                     </div>
 
-                    <div class="collapse" id="<?= $ticketID ?>">
+                    <div class="collapse" id="<?php echo  $ticketID ?>">
 
                         <div class="card-footer bg-white border-top p-3">
                             <div class="row mb-2 align-items-baseline">
                                 <div class="col-auto text-muted" style="width: 30px;"><i class="bi bi-calendar3"></i></div>
                                 <div class="col-auto px-1" style="width: 120px;"><strong>Date and Time</strong></div>
                                 <div class="col-auto px-1">:</div>
-                                <div class="col"><?= $formattedDateTime ?></div>
+                                <div class="col"><?php echo  $formattedDateTime ?></div>
                             </div>
                             <div class="row mb-2 align-items-baseline">
                                 <div class="col-auto text-muted" style="width: 30px;"><i class="bi bi-building"></i></div>
                                 <div class="col-auto px-1" style="width: 120px;"><strong>Department</strong></div>
                                 <div class="col-auto px-1">:</div>
-                                <div class="col"><?= $deptName ?></div>
+                                <div class="col"><?php echo  $deptName ?></div>
                             </div>
                             <div class="row mb-2 align-items-baseline">
                                 <div class="col-auto text-muted" style="width: 30px;"><i class="bi bi-building"></i></div>
                                 <div class="col-auto px-1" style="width: 120px;"><strong>Item</strong></div>
                                 <div class="col-auto px-1">:</div>
-                                <div class="col"><strong><?= $article ?></strong></div>
+                                <div class="col"><strong><?php echo  $article ?></strong></div>
                             </div>
                             <div class="row align-items-baseline">
                                 <div class="col-auto text-muted" style="width: 30px;"><i class="bi bi-chat-left-text"></i></div>
                                 <div class="col-auto px-1" style="width: 120px;"><strong>Description</strong></div>
                                 <div class="col-auto px-1">:</div>
-                                <div class="col"><?= $description ?></div>
+                                <div class="col"><?php echo  $description ?></div>
                             </div>
                             <div class="row align-items-baseline">
                                 <?php
                                 if($row['status_id'] == 1){
                                     ?>
-                                    <div class="btn btn-success border rounded rounded p-4" onclick="event.stopPropagation(); acceptInventory('<?php echo $row['i_ticket_id']; ?>')">
+                                    <div class="btn btn-success border rounded p-4" onclick="event.stopPropagation(); acceptInventory('<?php echo (int)$row['i_ticket_id']; ?>')">
                                         Accept
                                     </div>
                                    <?php
                                 }   else{
                                     ?>
-                                    <div class="btn btn-primary border rounded rounded p-4" onclick="event.stopPropagation(); returnInventory(this,'<?php echo $row['i_ticket_id']; ?>')">
+                                    <div class="btn btn-primary border rounded p-4" onclick="event.stopPropagation(); returnInventory(this,'<?php echo (int)$row['i_ticket_id']; ?>')">
                                         Return
                                     </div>
                                 <?php

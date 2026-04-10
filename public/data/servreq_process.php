@@ -1,112 +1,91 @@
 <?php
-// Start session to get the logged-in employee ID
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . "/../../config/bootstrap.php";
 
-// Clear any accidental output and set header
-if (ob_get_length()) ob_clean();
 header('Content-Type: application/json');
 
-// Include your database connection
-require_once __DIR__ . "/../../config/db.php";
+Security::requireAuth();
+Security::requireRole([3]); // Employee only
+Security::requirePost();
+Security::requireCsrf();
 
 try {
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        throw new Exception("Invalid request method.");
-    }
-
     $form_type = $_POST['form_type'] ?? '';
-    $employee_id = $_SESSION['employee_id'] ?? null;
+    $employee_id = $_SESSION['employee_id'];
 
-    if (!$employee_id) {
-        throw new Exception("User session expired. Please log in again.");
-    }
-
-    /**
-     * STATUS MAPPING FROM 5PM.SQL:
-     * 1 = Pending
-     * 2 = In Progress
-     * 3 = Pending Feedback (The Gate)
-     * 5 = Completed (The Unlocker)
-     */
-    $status_pending = 1; 
-    $status_completed = 5; 
+    $status_pending = 1;
+    $status_completed = 5;
 
     // --- CASE 1: JOB REQUEST ---
     if ($form_type === 'job_request') {
-        // Validation: Block if user has an active job (1, 2) OR needs to provide feedback (3)
-        $checkSql = "SELECT COUNT(*) FROM job_request WHERE requested_by_employee = ? AND status_id IN (1, 2, 3)";
-        $checkStmt = $pdo->prepare($checkSql);
+        $checkStmt = $pdo->prepare("SELECT COUNT(*) FROM job_request WHERE requested_by_employee = ? AND status_id IN (1, 2, 3)");
         $checkStmt->execute([$employee_id]);
-        
+
         if ($checkStmt->fetchColumn() > 0) {
-            throw new Exception("You have an ongoing request or pending feedback that needs attention.");
+            Security::jsonError('You have an ongoing request or pending feedback that needs attention.');
         }
 
-        $job_type = $_POST['jobType'] ?? ''; 
-        $description = $_POST['jobDescription'] ?? '';
+        $job_type = trim($_POST['jobType'] ?? '');
+        $description = trim($_POST['jobDescription'] ?? '');
 
-        if (empty($description)) throw new Exception("Please provide a description.");
+        if (empty($description)) {
+            Security::jsonError('Please provide a description.');
+        }
 
-        $sql = "INSERT INTO job_request (requested_by_employee, request_type, description, status_id) 
+        $sql = "INSERT INTO job_request (requested_by_employee, request_type, description, status_id)
                 VALUES (?, ?, ?, ?)";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([$employee_id, $job_type, $description, $status_pending]);
 
-        echo json_encode(['status' => 'success', 'message' => 'Job request submitted successfully!']);
+        echo json_encode(['success' => true, 'status' => 'success', 'message' => 'Job request submitted successfully!']);
 
     // --- CASE 2: INVENTORY REQUEST ---
     } elseif ($form_type === 'inventory_request') {
-        $device_id = $_POST['device_id'] ?? '';
-        $item_id = $_POST['item_id'] ?? '';
-        error_log(print_r($_POST,true));
-        $item_id = $_POST['item_id'] ?? '';
-        $purpose = $_POST['invDescription'] ?? '';
+        $item_id = (int)($_POST['item_id'] ?? 0);
+        $purpose = trim($_POST['invDescription'] ?? '');
 
-        $sql = "INSERT INTO inventory_request (requested_by_employee, item_id, `description`, status_id, date_borrowed) 
+        if (!$item_id || empty($purpose)) {
+            Security::jsonError('Please fill in all required fields.');
+        }
+
+        $sql = "INSERT INTO inventory_request (requested_by_employee, item_id, `description`, status_id, date_borrowed)
                 VALUES (?, ?, ?, ?, NOW())";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([$employee_id, $item_id,  $purpose, $status_pending ]);
+        $stmt->execute([$employee_id, $item_id, $purpose, $status_pending]);
 
-        echo json_encode(['status' => 'success', 'message' => 'Inventory request submitted successfully!']);
+        echo json_encode(['success' => true, 'status' => 'success', 'message' => 'Inventory request submitted successfully!']);
 
-    // --- CASE 3: FEEDBACK SUBMISSION (The Gate Unlocker) ---
+    // --- CASE 3: FEEDBACK SUBMISSION ---
     } elseif ($form_type === 'feedback_submission') {
-        $j_ticket_id = $_POST['j_ticket_id'] ?? '';
-        $rating = $_POST['rating'] ?? '';
-        $comments = $_POST['user_feedback'] ?? '';
+        $j_ticket_id = (int)($_POST['j_ticket_id'] ?? 0);
+        $rating = (int)($_POST['rating'] ?? 0);
+        $comments = trim($_POST['user_feedback'] ?? '');
 
-        if (empty($j_ticket_id) || empty($rating)) {
-            throw new Exception("Please select a rating before submitting.");
+        if (!$j_ticket_id || !$rating || $rating < 1 || $rating > 5) {
+            Security::jsonError('Please select a valid rating before submitting.');
         }
 
         $pdo->beginTransaction();
 
-        // 1. Insert into feedback table
-        // Note: rating is stored as a decimal/tinyint in your schema
         $sqlFeed = "INSERT INTO feedback (j_ticket_id, employee_id, rating, comments) VALUES (?, ?, ?, ?)";
         $stmtFeed = $pdo->prepare($sqlFeed);
         $stmtFeed->execute([$j_ticket_id, $employee_id, $rating, $comments]);
 
-        // 2. Update job_request to Status 5 (Completed) 
-        // This makes the 'needsFeedback' check in service_req_data.php return false.
-        $sqlUpdate = "UPDATE job_request SET status_id = ?, updated_at = NOW() 
+        $sqlUpdate = "UPDATE job_request SET status_id = ?, updated_at = NOW()
                       WHERE j_ticket_id = ? AND requested_by_employee = ?";
         $stmtUpdate = $pdo->prepare($sqlUpdate);
         $stmtUpdate->execute([$status_completed, $j_ticket_id, $employee_id]);
 
         $pdo->commit();
 
-        echo json_encode(['status' => 'success', 'message' => 'Thank you! Your feedback has been recorded and the request is now closed.']);
+        echo json_encode(['success' => true, 'status' => 'success', 'message' => 'Thank you! Your feedback has been recorded and the request is now closed.']);
 
     } else {
-        throw new Exception("Invalid form submission type.");
+        Security::jsonError('Invalid form submission type.');
     }
 
 } catch (Exception $e) {
     if (isset($pdo) && $pdo->inTransaction()) {
         $pdo->rollBack();
     }
-    echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+    Security::jsonError('An error occurred. Please try again.', 'ServReq Error: ' . $e->getMessage());
 }

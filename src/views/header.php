@@ -53,12 +53,12 @@ if (!$roleId) {
           <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
             <!-- MAKE DYNAMIC LATER -->
             <img
-              src="<?= htmlspecialchars($_SESSION['profile_pic']) ?>"
+              src="<?php echo  htmlspecialchars($_SESSION['profile_pic']) ?>"
               class="user-image rounded-circle shadow"
               alt="User Image"
             />
             <span class="d-none d-md-inline">
-            <?= htmlspecialchars(
+            <?php echo  htmlspecialchars(
               $_SESSION['first_name'] . ' ' .
               (!empty($_SESSION['middle_name']) ? $_SESSION['middle_name'][0] . '. ' : '') .
               $_SESSION['last_name']
@@ -71,12 +71,12 @@ if (!$roleId) {
             <!--begin::User Image-->
             <li class="user-header text-bg-primary">
               <img
-                src="<?= htmlspecialchars($_SESSION['profile_pic']) ?>"
+                src="<?php echo  htmlspecialchars($_SESSION['profile_pic']) ?>"
                 class="rounded-circle shadow"
                 alt="User Image"
               />
               <p>
-                <?= htmlspecialchars(
+                <?php echo  htmlspecialchars(
                   $_SESSION['first_name'] . ' ' .
                   (!empty($_SESSION['middle_name']) ? $_SESSION['middle_name'][0] . '. ' : '') .
                   $_SESSION['last_name']

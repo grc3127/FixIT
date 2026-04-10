@@ -2,29 +2,40 @@
 
 class AppHelper
 {
+    private PDO $Db;
+    private array $Container = [];
 
-    private $Db;
-    private $Container = [];
-
-    public function __construct($db){
+    public function __construct(PDO $db)
+    {
         $this->Db = $db;
     }
-    public function pdo(){
+
+    public function pdo(): PDO
+    {
         return $this->Db;
     }
 
-    public function set($var,$val){
+    public function set(string $var, mixed $val): void
+    {
         $this->Container[$var] = $val;
     }
-    public function get($var){
+
+    public function get(string $var): mixed
+    {
         return $this->Container[$var] ?? null;
     }
 
-    public function includeFile($file, $asfile = false, $once = false)
+    public function includeFile(string $file, bool $asfile = false, bool $once = false): ?string
     {
         $pdo = $this->pdo();
         $APP = &$this;
         $file = $this->cleanDirectory(__DIR__ . '/' . $file);
+
+        if (!file_exists($file)) {
+            error_log("AppHelper::includeFile - File not found: " . $file);
+            return null;
+        }
+
         if ($asfile) {
             return $file;
         }
@@ -33,9 +44,10 @@ class AppHelper
         } else {
             include($file);
         }
+        return null;
     }
 
-    public function cleanDirectory($dir)
+    public function cleanDirectory(string $dir): string
     {
         $dir = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $dir);
         $dir = preg_replace('/' . preg_quote(DIRECTORY_SEPARATOR, '/') . '{2,}/', DIRECTORY_SEPARATOR, $dir);

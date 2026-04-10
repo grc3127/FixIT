@@ -1,17 +1,28 @@
 <?php
+require_once __DIR__ . "/../src/security.php";
+
+$envConfig = require __DIR__ . "/../config/env.php";
+Security::configureSession($envConfig['session']);
 session_start();
 
-// Unset all session variables
-// $_SESSION = [];
+// Clear all session data
+$_SESSION = [];
 session_unset();
-// Destroy the session
 session_destroy();
 
-// Optional: delete the session cookie
+// Delete the session cookie
 if (ini_get("session.use_cookies")) {
-    setcookie(session_name(), '', time() - 42000, '/');
+    $params = session_get_cookie_params();
+    setcookie(
+        session_name(),
+        '',
+        time() - 42000,
+        $params['path'],
+        $params['domain'],
+        $params['secure'],
+        $params['httponly']
+    );
 }
 
-// Redirect to login page
 header("Location: login.php");
 exit;

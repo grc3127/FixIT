@@ -1,5 +1,8 @@
 <?php
-require_once __DIR__ . "/../../config/db.php";
+// db.php is already loaded via index.php, but this file is also used standalone
+if (!isset($pdo)) {
+    require_once __DIR__ . "/../../config/db.php";
+}
 
 try {
     // Select employee details based on your schema
@@ -58,5 +61,3 @@ try {
     $statuses = [];
     $roles = [1 => 'Administration', 2 => 'Technical', 3 => 'Employee'];
 }
-
-?>

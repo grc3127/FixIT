@@ -18,51 +18,38 @@ $stmtCheckJob = $pdo->prepare("
     ORDER BY created_at DESC LIMIT 1
 ");
 $stmtCheckJob->execute([$loggedInEmployeeId]);
-$activeJob = $stmtCheckJob->fetch(PDO::FETCH_ASSOC);
+$activeJob = $stmtCheckJob->fetch();
 
-// Initialize variables to prevent "Undefined Variable" warnings in the view
-$hasActiveJob  = ($activeJob && in_array($activeJob['status_id'], [1, 2, 3]));
-$needsFeedback = ($activeJob && $activeJob['status_id'] == 5);
+$hasActiveJob  = ($activeJob && in_array((int)$activeJob['status_id'], [1, 2, 3], true));
+$needsFeedback = ($activeJob && (int)$activeJob['status_id'] === 3);
 
-/**
- * 2. CHECK INVENTORY REQUEST STATUS
- */
+// 2. Check inventory request status
 $stmtCheckInv = $pdo->prepare("SELECT COUNT(*) FROM inventory_request WHERE requested_by_employee = ? AND status_id IN (1, 2)");
 $stmtCheckInv->execute([$loggedInEmployeeId]);
 $hasActiveInv = $stmtCheckInv->fetchColumn() > 0;
 
-/**
- * 3. FETCH DEVICES AND ARTICLES
- */
-// Fetch all devices for the first dropdown
+// 3. Fetch devices and articles
 $stmt = $pdo->query("SELECT device_id, device_name FROM device");
-$devices = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$devices = $stmt->fetchAll();
 
-// Fetch only 'Available' items (status_id = 1)
 $itemStmt = $pdo->query("
-    SELECT i.device_id, i.item_id, i.article, s.status_name 
+    SELECT i.item_id, i.device_id, i.article, s.status_name
     FROM item i
     INNER JOIN item_status s ON i.status_id = s.status_id
-    WHERE i.status_id = 1 
+    WHERE i.status_id = 1
     ORDER BY i.article ASC
 ");
-$availableItems = $itemStmt->fetchAll(PDO::FETCH_ASSOC);
+$availableItems = $itemStmt->fetchAll();
 
-// Group items by device_id for the JavaScript map
+// Group items by device_id
 $articleMap = [];
 foreach ($availableItems as $item) {
-    // Use item_id as the key for the associative array
-    $articleMap[$item['device_id']][$item['item_id']] = $item['article'];
-    if(!isset($articleMap[$item['device_id']])){
-        $articleMap[$item['device_id']] = [];
-    }
     $articleMap[$item['device_id']][$item['item_id']] = $item['article'];
 }
 
-// Ensure $jsonArticleMap is always defined for the script tag
-if(!$noDisplay) {
-
+// When called directly (not from view), return JSON
+if (empty($noDisplay)) {
     header('Content-Type: application/json');
-    echo json_encode($articleMap ?? (object)[]);
+    echo json_encode($articleMap ?: (object)[]);
+    exit;
 }
-

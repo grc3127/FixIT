@@ -13,7 +13,8 @@ try {
     $stmt = $pdo->query($sql);
     $feedbacks = $stmt->fetchAll();
 } catch (\PDOException $e) {
-    die("Database error: " . $e->getMessage());
+    error_log("Feedback Error: " . $e->getMessage());
+    $feedbacks = [];
 }
 
 ?>
@@ -29,24 +30,25 @@ try {
             <div class="direct-chat-msg" style="margin-bottom: 20px;">
                 <div class="direct-chat-infos clearfix">
                     <span class="direct-chat-name float-start">
-                        <?= htmlspecialchars($row['first_name'] . ' ' . $row['last_name']) ?> >
+                        <?php echo  htmlspecialchars($row['first_name'] . ' ' . $row['last_name']) ?>
+                        <!-- <small class="text-muted">(ID: <?php echo  htmlspecialchars($row['employee_id']) ?>)</small> -->
                     </span>
                     <span class="direct-chat-timestamp float-end">
-                        <strong>Rating: <?= htmlspecialchars($row['rating']) ?></strong> | 
-                            <?= date("d M g:i a", strtotime($row['updated_at'] ?? 'now')) ?>
+                        <strong>Rating: <?php echo  htmlspecialchars($row['rating']) ?></strong> |
+                            <?php echo  date("d M g:i a", strtotime($row['updated_at'] ?? 'now')) ?>
                     </span>
                 </div>
                 
                 <!-- Avatar (Placeholder logic) -->
                 <img 
                     class="direct-chat-img" 
-                    src="<?= htmlspecialchars($row['profile_pic']) ?>"
+                    src="<?php echo  htmlspecialchars($row['profile_pic']) ?>"
                     alt="user image"
                 />
                 
                 <!-- The actual feedback text -->
                 <div class="direct-chat-text">
-                    <?= htmlspecialchars($row['comments']) ?>
+                    <?php echo  htmlspecialchars($row['comments']) ?>
                 </div>
             </div>
             <!-- /.direct-chat-msg -->

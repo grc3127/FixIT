@@ -5,7 +5,7 @@
                 <i class="bi bi-exclamation-circle text-warning mb-3" style="font-size: 3rem;"></i>
                 <h4 class="fw-bold">Confirm Acceptance</h4>
                 <p class="text-muted">Are you sure you want to accept this job request? You can only handle one task at a time.</p>
-                
+
                 <div class="d-flex justify-content-center gap-2 mt-4">
                     <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" id="jrConfirmBtn" class="btn btn-success px-4">Yes, Accept it</button>
@@ -40,8 +40,8 @@
             <div class="modal-body text-center p-4">
                 <i class="bi bi-exclamation-circle text-warning mb-3" style="font-size: 3rem;"></i>
                 <h4 class="fw-bold">Confirm Acceptance</h4>
-                <p class="text-muted">Are you sure you want to accept this invetory request? You can only handle one task at a time.</p>
-                
+                <p class="text-muted">Are you sure you want to accept this inventory request? You can only handle one task at a time.</p>
+
                 <div class="d-flex justify-content-center gap-2 mt-4">
                     <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" id="irConfirmBtn" class="btn btn-success px-4">Yes, Accept it</button>
@@ -111,11 +111,6 @@ document.getElementById('submitFinishBtn').addEventListener('click', function() 
     const remarks = document.getElementById('jrRemarks').value.trim();
     const btn = this;
 
-    // DEBUG: Check values in console (F12)
-    console.log("Attempting to finish job...");
-    console.log("Ticket ID:", currentActiveJobTicketId);
-    console.log("Remarks:", remarks);
-
     if (!currentActiveJobTicketId) {
         alert("Error: No active ticket ID found. Please refresh the page.");
         return;
@@ -132,10 +127,9 @@ document.getElementById('submitFinishBtn').addEventListener('click', function() 
     fetch('data/finish_job_request.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `ticket_id=${encodeURIComponent(currentActiveJobTicketId)}&remarks=${encodeURIComponent(remarks)}`
+        body: `ticket_id=${encodeURIComponent(currentActiveJobTicketId)}&remarks=${encodeURIComponent(remarks)}&csrf_token=${encodeURIComponent(CSRF_TOKEN)}`
     })
     .then(response => {
-        // If PHP crashes, this helps you see the "messy" error
         if (!response.ok) throw new Error('Network response was not ok');
         return response.json();
     })
@@ -150,7 +144,7 @@ document.getElementById('submitFinishBtn').addEventListener('click', function() 
     })
     .catch(error => {
         console.error('Fetch error:', error);
-        alert("Connection error. Check console for details.");
+        alert("Connection error. Please try again.");
         btn.disabled = false;
         btn.innerText = "Submit & Finish";
     });
@@ -158,7 +152,7 @@ document.getElementById('submitFinishBtn').addEventListener('click', function() 
 
 document.getElementById('irConfirmBtn').addEventListener('click', function() {
     if (!selectedInvId) return;
-    processAcceptance(this, '../src/handlers/accept_inv_request.php', selectedInvId, irModal);
+    processAcceptance(this, 'data/accept_inv_request.php', selectedInvId, irModal);
 });
 
 
@@ -169,7 +163,7 @@ function processAcceptance(btn, handlerPath, id, modalObj) {
     fetch(handlerPath, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 'ticket_id=' + id
+        body: 'ticket_id=' + encodeURIComponent(id) + '&csrf_token=' + encodeURIComponent(CSRF_TOKEN)
     })
     .then(response => response.json())
     .then(data => {
@@ -188,7 +182,34 @@ function processAcceptance(btn, handlerPath, id, modalObj) {
     });
 }
 
+function returnInventory(btn, ticketId) {
+    if (!confirm('Are you sure you want to mark this item as returned?')) return;
 
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Processing...';
+
+    fetch('data/finish_inv_request.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'ticket_id=' + encodeURIComponent(ticketId) + '&csrf_token=' + encodeURIComponent(CSRF_TOKEN)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.reload();
+        } else {
+            alert("Error: " + data.message);
+            btn.disabled = false;
+            btn.innerText = 'Return';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("A connection error occurred.");
+        btn.disabled = false;
+        btn.innerText = 'Return';
+    });
+}
 </script>
 
 
@@ -198,9 +219,10 @@ function processAcceptance(btn, handlerPath, id, modalObj) {
     function submitFeedback() {
     const form = document.getElementById('feedbackForm');
     const formData = new FormData(form);
+    formData.append('csrf_token', CSRF_TOKEN);
 
     if (!formData.get('rating')) {
-        alert('Please select a star rating.'); 
+        alert('Please select a star rating.');
         return;
     }
 
@@ -210,8 +232,8 @@ function processAcceptance(btn, handlerPath, id, modalObj) {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.status === 'success') {
-            alert(data.message); // Standard alert
+        if (data.status === 'success' || data.success) {
+            alert(data.message);
             location.reload();
         } else {
             alert('Error: ' + data.message);
@@ -230,9 +252,9 @@ function processAcceptance(btn, handlerPath, id, modalObj) {
     include(dirname(__DIR__,2) . "/public/data/service_req_data.php");
     ?>
     if (typeof articleMap === 'undefined') {
-        var articleMap = <?= json_encode($articleMap,true) ?>;
+        var articleMap = <?php echo  json_encode($articleMap, JSON_FORCE_OBJECT) ?>;
     } else {
-        articleMap = <?= json_encode($articleMap,true) ?>;
+        articleMap = <?php echo  json_encode($articleMap, JSON_FORCE_OBJECT) ?>;
     }
     let activeFormId = '';
     const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
@@ -243,17 +265,14 @@ function processAcceptance(btn, handlerPath, id, modalObj) {
         const selectedId = deviceSelect.value;
 
         articleSelect.innerHTML = '';
-        
+
         if (selectedId && articleMap[selectedId]) {
             articleSelect.disabled = false;
             articleSelect.add(new Option("Select an article...", "", true, true));
 
-            // Get the data (it might be an object or an array)
             const articles = articleMap[selectedId];
-
-            // Convert to array if it's an object, then iterate
-            Object.values(articles).forEach(article => {
-                articleSelect.add(new Option(article, article));
+            Object.entries(articles).forEach(([itemId, article]) => {
+                articleSelect.add(new Option(article, itemId));
             });
         } else {
             articleSelect.disabled = true;
@@ -264,7 +283,7 @@ function processAcceptance(btn, handlerPath, id, modalObj) {
     function confirmSubmission(requestType) {
         activeFormId = (requestType === 'job') ? 'jobRequestForm' : 'inventoryRequestForm';
         const form = document.getElementById(activeFormId);
-        
+
         if (!form.checkValidity()) {
             form.reportValidity();
             return;
@@ -275,13 +294,14 @@ function processAcceptance(btn, handlerPath, id, modalObj) {
 
         modalBody.innerText = "Confirm submitting this " + requestType + " request?";
         submitBtn.className = (requestType === 'job') ? "btn btn-primary" : "btn btn-success";
-        
+
         confirmModal.show();
     }
 
     document.getElementById('finalSubmitBtn').addEventListener('click', function() {
         const form = document.getElementById(activeFormId);
         const formData = new FormData(form);
+        formData.append('csrf_token', CSRF_TOKEN);
         const submitBtn = this;
 
         submitBtn.disabled = true;
@@ -295,15 +315,14 @@ function processAcceptance(btn, handlerPath, id, modalObj) {
         .then(response => response.json())
         .then(data => {
             confirmModal.hide();
-            showAlert(data.status === 'success' ? 'success' : 'danger', data.message);
-    
-            if (data.status === 'success') {
+            showAlert(data.status === 'success' || data.success ? 'success' : 'danger', data.message);
+
+            if (data.status === 'success' || data.success) {
                 form.reset();
             }
         })
         .catch(error => {
             confirmModal.hide();
-            // This logs the technical error to the console for you to debug
             console.error('Fetch Error:', error);
             showAlert('danger', 'System Error: Could not connect to the processing script.');
         })

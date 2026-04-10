@@ -1,35 +1,42 @@
 <?php
+require_once __DIR__ . "/../../config/bootstrap.php";
+
 header('Content-Type: application/json');
-require_once __DIR__ . "/../../config/db.php";
-$ticket_id = isset($_POST['ticket_id']) ? $_POST['ticket_id'] : null;
-$remarks = isset($_POST['remarks']) ? trim($_POST['remarks']) : null;
+
+Security::requireAuth();
+Security::requireRole([1, 2]); // Admin + Technical
+Security::requirePost();
+Security::requireCsrf();
+
+$ticket_id = (int)($_POST['ticket_id'] ?? 0);
+$remarks = trim($_POST['remarks'] ?? '');
 
 if (!$ticket_id || !$remarks) {
-    echo json_encode(['success' => false, 'message' => 'Missing required fields.']);
-    exit;
+    Security::jsonError('Missing required fields.');
 }
 
 try {
-    $sql = "UPDATE job_request 
-            SET status_id = 3, 
-                remarks = :remarks, 
-                updated_at = NOW() 
-            WHERE j_ticket_id = :tid";
+    // Only allow finishing jobs the current user is working on
+    $sql = "UPDATE job_request
+            SET status_id = 3,
+                remarks = :remarks,
+                updated_at = NOW()
+            WHERE j_ticket_id = :tid
+            AND taken_by_employee = :eid
+            AND status_id = 2";
     $stmt = $pdo->prepare($sql);
     $success = $stmt->execute([
         'remarks' => $remarks,
-        'tid' => $ticket_id
+        'tid' => $ticket_id,
+        'eid' => $_SESSION['employee_id']
     ]);
 
-    if ($success) {
+    if ($success && $stmt->rowCount() > 0) {
         echo json_encode(['success' => true]);
     } else {
-        echo json_encode(['success' => false, 'message' => 'Failed to update database.']);
+        Security::jsonError('Job not found or not assigned to you.');
     }
 
 } catch (PDOException $e) {
-    // Return the actual SQL error for debugging
-    echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
+    Security::jsonError('A database error occurred.', 'Finish Job Error: ' . $e->getMessage());
 }
-
-?>

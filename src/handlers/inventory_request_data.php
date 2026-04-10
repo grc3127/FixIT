@@ -73,4 +73,3 @@ $activeItemSql = "SELECT
 $activeStmt = $pdo->prepare($activeItemSql);
 $activeStmt->execute(['eid' => $currentUserId]);
 $activeItemRequest = $activeStmt->fetch();
-?>

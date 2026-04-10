@@ -33,8 +33,8 @@
                     <div class="card-header">
                         <div class="d-flex">
                             <p class="d-flex flex-column">
-                                <span class="fw-bold fs-5">Total completed requests: <?= $request_overtime_safe ?></span> 
-                                <span><?= $current_date ?></span>
+                                <span class="fw-bold fs-5">Total completed requests: <?php echo  $request_overtime_safe ?></span> 
+                                <span><?php echo  $current_date ?></span>
                             </p>
                         </div>
                     </div>
@@ -129,12 +129,12 @@
                     $headerColor = $needsFeedback ? 'bg-info' : 'bg-primary';
                     ?>
                     <div class="card shadow-sm mb-4 h-100 border-0">
-                        <div class="card-header <?= $headerColor ?> text-white">
+                        <div class="card-header <?php echo  $headerColor ?> text-white">
                             <h3 class="card-title mt-1">
                                 <?php if ($needsFeedback): ?>
                                     <i class="bi bi-star-fill me-2"></i>Rate Our Service
                                 <?php else: ?>
-                                    <?= $job ? "Job Request #" . $job['j_ticket_id'] : "Job Request" ?>
+                                    <?php echo  $job ? "Job Request #" . $job['j_ticket_id'] : "Job Request" ?>
                                 <?php endif; ?>
                             </h3>
                         </div>
@@ -142,12 +142,12 @@
                             <?php if ($needsFeedback): ?>
                                 <form id="feedbackForm">
                                     <input type="hidden" name="form_type" value="feedback_submission">
-                                    <input type="hidden" name="j_ticket_id" value="<?= $job['j_ticket_id'] ?>">
+                                    <input type="hidden" name="j_ticket_id" value="<?php echo  $job['j_ticket_id'] ?>">
                                     
                                     <div class="mb-3">
                                         <label class="fw-bold d-block text-muted small uppercase">Technician's Remarks</label>
                                         <div class="p-2 bg-light rounded border small fst-italic">
-                                            "<?= htmlspecialchars($job['remarks'] ?? 'No remarks provided.') ?>"
+                                            "<?php echo  htmlspecialchars($job['remarks'] ?? 'No remarks provided.') ?>"
                                         </div>
                                     </div>
 
@@ -156,9 +156,9 @@
                                         <div class="d-flex justify-content-between">
                                             <?php for ($i = 1; $i <= 5; $i++): ?>
                                                 <label class="text-center">
-                                                    <input type="radio" name="rating" value="<?= $i ?>" class="btn-check" id="rate<?= $i ?>" required>
+                                                    <input type="radio" name="rating" value="<?php echo  $i ?>" class="btn-check" id="rate<?php echo  $i ?>" required>
                                                     <span class="btn btn-outline-info rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                                        <?= $i ?>
+                                                        <?php echo  $i ?>
                                                     </span>
                                                 </label>
                                             <?php endfor; ?>
@@ -178,7 +178,7 @@
                             <?php elseif ($job): ?>
                                 <div class="mb-3">
                                     <label class="fw-bold d-block text-muted small uppercase">Status</label>
-                                    <span class="badge bg-warning text-dark"><?= $job['status_name'] ?></span>
+                                    <span class="badge bg-warning text-dark"><?php echo  $job['status_name'] ?></span>
                                 </div>
                                 
                                 <?php if (!empty($job['taken_by_employee'])): ?>
@@ -186,7 +186,7 @@
                                         <label class="fw-bold d-block text-muted small uppercase">Taken By</label>
                                         <p class="fs-5 mb-0 text-primary">
                                             <i class="bi bi-person-check-fill me-1"></i>
-                                            <?= htmlspecialchars($job['technician_name'] ?? 'Assigned') ?>
+                                            <?php echo  htmlspecialchars($job['technician_name'] ?? 'Assigned') ?>
                                         </p>
                                     </div>
                                 <?php else: ?>
@@ -199,7 +199,7 @@
                                 <hr>
                                 <div>
                                     <label class="fw-bold d-block text-muted small uppercase">Description</label>
-                                    <p class="fs-6 mt-2"><?= htmlspecialchars($job['description']) ?></p>
+                                    <p class="fs-6 mt-2"><?php echo  htmlspecialchars($job['description']) ?></p>
                                 </div>
 
                             <?php else: ?>
@@ -221,20 +221,20 @@
                               <?php if ($inv): ?>
                                   <div class="mb-3">
                                       <label class="fw-bold d-block text-muted small uppercase">Ticket ID</label>
-                                      <p class="fs-5 mb-0">#<?= $inv['i_ticket_id'] ?></p>
+                                      <p class="fs-5 mb-0">#<?php echo  $inv['i_ticket_id'] ?></p>
                                   </div>
                                   <div class="mb-3">
                                       <label class="fw-bold d-block text-muted small uppercase">Item Requested</label>
-                                      <p class="fs-5 mb-0 text-success fw-bold"><?= htmlspecialchars($inv['item_name']) ?></p>
+                                      <p class="fs-5 mb-0 text-success fw-bold"><?php echo  htmlspecialchars($inv['item_name']) ?></p>
                                   </div>
                                   <div class="mb-3">
                                       <label class="fw-bold d-block text-muted small uppercase">Status</label>
-                                      <span class="badge bg-success"><?= $inv['status_name'] ?></span>
+                                      <span class="badge bg-success"><?php echo  $inv['status_name'] ?></span>
                                   </div>
                                   <hr>
                                   <div>
                                       <label class="fw-bold d-block text-muted small uppercase">Purpose</label>
-                                      <p class="fs-6 mt-2"><?= htmlspecialchars($inv['description']) ?></p>
+                                      <p class="fs-6 mt-2"><?php echo  htmlspecialchars($inv['description']) ?></p>
                                   </div>
                               <?php else: ?>
                                   <div class="text-center py-4">
