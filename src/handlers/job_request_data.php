@@ -15,7 +15,7 @@ $countPending = $stmtPending->fetchColumn();
 // 3. Tasks you finished TODAY (Status 3 - Waiting for user feedback)
 // Technicians consider a task "Finished" once they move it to status 5
 $sqlFinished = "SELECT COUNT(*) FROM job_request 
-                WHERE status_id = 3 
+                WHERE status_id = 5 
                 AND taken_by_employee = :eid
                 AND DATE(updated_at) = :today";
 $stmtFinished = $pdo->prepare($sqlFinished);

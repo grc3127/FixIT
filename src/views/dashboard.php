@@ -10,6 +10,7 @@
           <h2 class="mb-0">Dashboard</h2>
         </div>
       </div>
+
       <!--end::Row-->
     </div>
     <!--end::Container-->
@@ -19,7 +20,6 @@
   <!--begin::App Content (STATISTICS and CARDS here)-->
   <div class="app-content">
     <div class="container-fluid">
-
         <?php
         $request_overtime = $APP->get('request_overtime');
         $request_overtime_safe = htmlspecialchars($request_overtime, ENT_QUOTES, 'UTF-8');
@@ -46,7 +46,7 @@
                 </div>
             </div>
 
-            <div class="row">
+            <!-- <div class="row">
                 <div class="col-lg-3 col-6">
                     <div class="small-box text-bg-primary">
                         <div class="inner"><h3>150</h3><p>New Orders</p></div>
@@ -75,7 +75,7 @@
                         <a href="#" class="small-box-footer">More info <i class="bi bi-link-45deg"></i></a>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
         <?php 
           // --- REGULAR EMPLOYEE VIEW ---
@@ -120,7 +120,7 @@
               $stmtInv->execute([$loggedInEmployeeId]);
               $inv = $stmtInv->fetch(PDO::FETCH_ASSOC);
           ?>
-
+            <!-- <div id="responseAlert" class="mb-4 d-none alert alert-dismissible fade show" role="alert"></div> -->
               <div class="row g-4">
                 <div class="col-12 col-md-6">
                     <?php 
@@ -170,7 +170,7 @@
                                         <textarea name="user_feedback" id="user_feedback" class="form-control form-control-sm" rows="2" placeholder="Tell us how it went..."></textarea>
                                     </div>
 
-                                    <button type="button" class="btn btn-info btn-sm w-100 text-white fw-bold" onclick="submitFeedback()">
+                                    <button id="" type="button" class="btn btn-info btn-sm w-100 text-white fw-bold" onclick="submitFeedback()">
                                         SUBMIT FEEDBACK & CLOSE TICKET
                                     </button>
                                 </form>
@@ -254,12 +254,10 @@
         // --- SHARED FEEDBACK SECTION (Admin Only) ---
         if (isset($_SESSION['role_id']) && $_SESSION['role_id'] === 1): 
         ?>
-            <div class="row mt-4">
-                <div class="col-12">
-                    <div class="card direct-chat direct-chat-primary mb-4">
+            <div class="row">
+                    <div class="card direct-chat direct-chat-primary ">
                         <?php include 'feedback.php'; ?>
                     </div>
-                </div>
             </div>
         <?php endif; ?>
 

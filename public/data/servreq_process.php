@@ -1,6 +1,5 @@
 <?php
 require_once __DIR__ . "/../../config/bootstrap.php";
-
 header('Content-Type: application/json');
 
 Security::requireAuth();
@@ -66,14 +65,14 @@ try {
 
         $pdo->beginTransaction();
 
-        $sqlFeed = "INSERT INTO feedback (j_ticket_id, employee_id, rating, comments) VALUES (?, ?, ?, ?)";
+        $sqlFeed = "INSERT INTO feedback (j_ticket_id, rating, comments) VALUES (?, ?, ?)";
         $stmtFeed = $pdo->prepare($sqlFeed);
-        $stmtFeed->execute([$j_ticket_id, $employee_id, $rating, $comments]);
+        $stmtFeed->execute([$j_ticket_id, $rating, $comments]);
 
         $sqlUpdate = "UPDATE job_request SET status_id = ?, updated_at = NOW()
-                      WHERE j_ticket_id = ? AND requested_by_employee = ?";
+                      WHERE j_ticket_id = ?";
         $stmtUpdate = $pdo->prepare($sqlUpdate);
-        $stmtUpdate->execute([$status_completed, $j_ticket_id, $employee_id]);
+        $stmtUpdate->execute([$status_completed, $j_ticket_id]);
 
         $pdo->commit();
 

@@ -89,7 +89,7 @@ if (array_key_exists($page, $routes)) {
 <script src="/js/popper.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
 <script src="/js/adminlte.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
+<script src="/js/cropper.min.js"></script>
 <script>
     // CSRF token for all fetch requests
     const CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
