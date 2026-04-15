@@ -14,8 +14,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
     try {
         if ($action === 'add') {
-            $sql = "INSERT INTO item (created_by_employee, device_id, status_id, article, property_num, serial_num, quantity, date_acquired)
-                    VALUES (:created_by, :device_id, :status_id, :article, :property_num, :serial_num, :quantity, :date_acquired)";
+            $sql = "INSERT INTO item (created_by_employee, device_id, status_id, article, property_num, serial_num, date_acquired)
+                    VALUES (:created_by, :device_id, :status_id, :article, :property_num, :serial_num, :date_acquired)";
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
                 ':created_by' => $_SESSION['employee_id'],
@@ -42,7 +42,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                             article = :article,
                             property_num = :property_num,
                             serial_num = :serial_num,
-                            quantity = :quantity,
                             date_acquired = :date_acquired
                         WHERE item_id = :item_id";
                 $stmt = $pdo->prepare($sql);

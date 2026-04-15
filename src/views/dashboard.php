@@ -26,7 +26,7 @@
         $current_date = date("l, F j, Y");
 
         // --- ADMIN & TECHNICIAN VIEW (Roles 1 and 2) ---
-        if (isset($_SESSION['role_id']) && in_array($_SESSION['role_id'], [1, 2], true)): 
+        if (isset($_SESSION['role_id']) && in_array($_SESSION['role_id'], [1,2], true)): 
         ?>
             <div class="row">
                 <div class="card mb-4">
@@ -45,7 +45,8 @@
                     </div>
                 </div>
             </div>
-
+            
+            <!-- CARDS -->
             <!-- <div class="row">
                 <div class="col-lg-3 col-6">
                     <div class="small-box text-bg-primary">

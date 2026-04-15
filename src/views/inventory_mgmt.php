@@ -280,7 +280,6 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('edit_device_id').value = item.device_id;
             document.getElementById('edit_property_num').value = item.property_num;
             document.getElementById('edit_serial_num').value = item.serial_num;
-            document.getElementById('edit_quantity').value = item.quantity;
             document.getElementById('edit_status_id').value = item.status_id;
             document.getElementById('edit_date_acquired').value = item.date_acquired || '';
         });

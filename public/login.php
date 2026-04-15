@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($email === '' || $password === '') {
             $error = "Email or password cannot be empty.";
         } else {
-            $sql = "SELECT employee_id, first_name, last_name, middle_name, role_id, password_hash, status_id, profile_pic
+            $sql = "SELECT employee_id, first_name, last_name, middle_name, role_id, password_hash, mobile_num, `address`, status_id, profile_pic
                     FROM employee WHERE email = :email LIMIT 1";
             $stmt = $pdo->prepare($sql);
             $stmt->execute(['email' => $email]);
@@ -52,7 +52,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['last_name']   = $user['last_name'];
                     $_SESSION['role_id']     = (int)$user['role_id'];
                     $_SESSION['email']       = $email;
+                    $_SESSION['mobile_num']  = $user['mobile_num'];
+                    $_SESSION['address']     = $user['address'];
                     $_SESSION['profile_pic'] = $user['profile_pic'];
+
+                    $_SESSION['user_data'] = [
+                        'employee_id' => $user['employee_id'],
+                        'first_name'  => $user['first_name'],
+                        'middle_name' => $user['middle_name'] ?? '',
+                        'last_name'   => $user['last_name'],
+                        'email'       => $email,
+                        'mobile_num'  => $user['mobile_num'],
+                        'address'     => $user['address']
+                    ];
 
                     header("Location: index.php");
                     exit;
