@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 10, 2026 at 03:46 AM
+-- Generation Time: Apr 16, 2026 at 02:59 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -127,10 +127,10 @@ CREATE TABLE `employee` (
 --
 
 INSERT INTO `employee` (`employee_id`, `first_name`, `middle_name`, `last_name`, `dept_id`, `role_id`, `password_hash`, `email`, `mobile_num`, `address`, `status_id`, `profile_pic`, `created_at`, `updated_at`) VALUES
-(1, 'Admin', 'I', 'strator', 1, 1, '$2y$12$6SNsE.EipJC1WXeCAQD3/uFazM82zF4RWg7y2wDNlU7WzuACIT2Yu', 'admin@gmail.com', '09000000001', 'San Fernando City', 1, '/img/profile_pic/administrator.jpg', '2026-03-25 08:04:30', '2026-04-09 10:34:14'),
+(1, 'Admin', 'I', 'strator', 1, 1, '$2y$12$6SNsE.EipJC1WXeCAQD3/uFazM82zF4RWg7y2wDNlU7WzuACIT2Yu', 'admin@gmail.com', '09000000001', 'San Fernando City', 1, '/img/profile_pic/administrator.jpg', '2026-03-25 08:04:30', '2026-04-15 07:15:29'),
 (2, 'Augusto', 'Patacsil', 'Manzana', 1, 1, '$2y$12$6SNsE.EipJC1WXeCAQD3/uFazM82zF4RWg7y2wDNlU7WzuACIT2Yu', 'augusto.manzana@gmail.com', '09000000002', 'Bauang', 1, '', '2026-03-25 08:04:30', '2026-03-30 03:31:23'),
 (3, 'Gladwin', 'Pedronio', 'Garcia', 2, 2, '$2y$12$6SNsE.EipJC1WXeCAQD3/uFazM82zF4RWg7y2wDNlU7WzuACIT2Yu', 'gladwin.garcia@gmail.com', '09000000003', 'Agoo', 1, '', '2026-03-25 08:04:30', '2026-03-30 03:31:27'),
-(4, 'Gelo Ryann', 'Mendoza', 'Carbonell', 2, 2, '$2y$12$6SNsE.EipJC1WXeCAQD3/uFazM82zF4RWg7y2wDNlU7WzuACIT2Yu', 'geloryann.carbonell@gmail.com', '09000000004', 'San Fernando City', 1, '/img/profile_pic/profile_69d781a513d367.02598208.jpg', '2026-03-25 08:04:30', '2026-04-09 10:38:29'),
+(4, 'Gelo Ryann', 'Mendoza', 'Carbonell', 2, 2, '$2y$12$6SNsE.EipJC1WXeCAQD3/uFazM82zF4RWg7y2wDNlU7WzuACIT2Yu', 'geloryann.carbonell@gmail.com', '09000000004', 'San Fernando City', 1, '/img/profile_pic/profile_69df3df80f4c41.85861830.jpg', '2026-03-25 08:04:30', '2026-04-15 07:27:52'),
 (5, 'Collette', 'Lindenman', 'Thorin', 3, 3, '$2y$12$6SNsE.EipJC1WXeCAQD3/uFazM82zF4RWg7y2wDNlU7WzuACIT2Yu', 'collette.thorin@gmail.com', '09000000005', 'Luna', 1, '/img/profile_pic/collete.jpg', '2026-03-25 08:38:21', '2026-04-09 10:34:14'),
 (6, 'Carma', 'Revie', 'Jehu', 3, 3, '$2y$12$6SNsE.EipJC1WXeCAQD3/uFazM82zF4RWg7y2wDNlU7WzuACIT2Yu', 'carma.jehu@gmail.com', '09000000006', 'Balaoan', 1, '/img/profile_pic/carma.png', '2026-03-25 08:38:21', '2026-04-09 10:34:14'),
 (7, 'Arley', 'Houtbie', 'Ted', 4, 3, '$2y$12$6SNsE.EipJC1WXeCAQD3/uFazM82zF4RWg7y2wDNlU7WzuACIT2Yu', 'arley.ted@gmail.com', '09000000007', 'Rosario', 1, '/img/profile_pic/arley.jpg', '2026-03-25 08:38:21', '2026-04-09 10:34:14'),
@@ -526,7 +526,9 @@ INSERT INTO `feedback` (`feedback_id`, `j_ticket_id`, `rating`, `comments`, `cre
 (366, 366, 2.0, 'bad service', '2026-04-09 04:24:39'),
 (367, 367, 1.0, 'OIIAI', '2026-04-09 04:45:50'),
 (371, 368, 1.0, 'tell us', '2026-04-09 05:19:55'),
-(372, 364, 4.0, 'HEIL HITLER', '2026-04-09 10:03:25');
+(372, 364, 4.0, 'HEIL HITLER', '2026-04-09 10:03:25'),
+(373, 369, 4.0, '67-69', '2026-04-12 03:02:43'),
+(374, 371, 1.0, 'very bad', '2026-04-12 03:18:10');
 
 -- --------------------------------------------------------
 
@@ -612,7 +614,8 @@ INSERT INTO `inventory_request` (`i_ticket_id`, `item_id`, `requested_by_employe
 (58, 16, 11, 'Borrow for next week', 1, NULL, '2026-03-20 07:00:00', NULL, NULL, '2026-03-20 07:01:00'),
 (59, 75, 8, 'Borrow for next week', 1, NULL, '2026-03-20 07:00:00', NULL, NULL, '2026-03-20 07:01:00'),
 (60, 52, 10, 'Borrow for next week', 1, NULL, '2026-03-20 07:00:00', NULL, NULL, '2026-03-20 07:01:00'),
-(61, 55, 6, 'Pahiram', 5, 1, '2026-04-09 09:02:40', 1, '2026-04-09 09:52:14', '2026-04-09 09:52:14');
+(61, 55, 6, 'Pahiram', 5, 1, '2026-04-09 09:02:40', 1, '2026-04-09 09:52:14', '2026-04-09 09:52:14'),
+(62, 12, 6, 'pahiram', 5, 1, '2026-04-12 03:16:09', 1, '2026-04-12 03:19:17', '2026-04-12 03:19:17');
 
 -- --------------------------------------------------------
 
@@ -692,7 +695,7 @@ INSERT INTO `item` (`item_id`, `created_by_employee`, `device_id`, `status_id`, 
 (51, 1, 11, 2, 'Ubiquiti UniFi U6 Lite', '2020-123456789173-0151', 'UU89173', NULL, NULL, NULL, '2026-04-10 01:24:54'),
 (52, 1, 11, 2, 'TP-Link EAP225', '2020-123456789174-0152', 'TE89174', NULL, NULL, NULL, '2026-04-10 01:24:54'),
 (53, 1, 11, 3, 'Cisco Aironet 1832i', '2020-123456789175-0153', 'CA89175', NULL, NULL, NULL, '2026-04-10 01:24:54'),
-(54, 1, 11, 4, 'Aruba Instant On AP22', '2020-123456789176-0154', 'AI89176', NULL, NULL, NULL, '2026-04-10 01:24:54'),
+(54, 1, 11, 4, 'Aruba Instant On AP22', '2020-123456789176-0154', 'AI89176', NULL, NULL, NULL, '2026-04-15 07:25:46'),
 (55, 1, 11, 1, 'Netgear WAX610', '2020-123456789177-0155', 'NW89177', NULL, NULL, NULL, '2026-04-10 01:24:54'),
 (56, 1, 12, 1, 'APC Back-UPS BX1100', '2020-123456789178-0156', 'AB89178', NULL, NULL, NULL, '2026-04-10 01:24:54'),
 (57, 1, 12, 3, 'CyberPower CP1500AVRLCD', '2020-123456789179-0157', 'CC89179', NULL, NULL, NULL, '2026-04-10 01:24:54'),
@@ -719,7 +722,7 @@ INSERT INTO `item` (`item_id`, `created_by_employee`, `device_id`, `status_id`, 
 (78, 1, 16, 3, 'HyperX Cloud Stinger', '2020-123456789200-0178', 'HC89200', NULL, NULL, NULL, '2026-04-10 01:24:54'),
 (79, 1, 16, 4, 'Corsair HS35', '2020-123456789201-0179', 'CH89201', NULL, NULL, NULL, '2026-04-10 01:24:54'),
 (80, 1, 16, 1, 'Sony WH-1000XM4', '2020-123456789202-0180', 'SW89202', NULL, NULL, NULL, '2026-04-10 01:24:54'),
-(81, 1, 11, 1, 'aaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'aa', 'aa', NULL, '2026-04-09', NULL, '2026-04-10 01:24:54');
+(81, 1, 11, 1, 'Test ITEM', 'aa', 'aa', NULL, '2026-04-09', NULL, '2026-04-15 07:40:33');
 
 -- --------------------------------------------------------
 
@@ -1132,7 +1135,10 @@ INSERT INTO `job_request` (`j_ticket_id`, `requested_by_employee`, `request_type
 (365, 8, 'Physical', 'qweqweqweqw', 1, 5, 'Araw ng kagitingan', '2026-04-09 04:23:27', '2026-04-09 04:23:27'),
 (366, 8, 'Digital', 'Araw ng kagitingan v2', 1, 5, 'DONEDONE', '2026-04-09 04:24:39', '2026-04-09 04:24:39'),
 (367, 8, 'Physical', 'requestquest', 1, 5, 'requestquestrequestquest', '2026-04-09 05:19:04', '2026-04-09 05:19:04'),
-(368, 8, 'Physical', 'aasdasdasdasdas', 1, 5, 'describe', '2026-04-09 05:19:55', '2026-04-09 05:19:55');
+(368, 8, 'Physical', 'aasdasdasdasdas', 1, 5, 'describe', '2026-04-09 05:19:55', '2026-04-09 05:19:55'),
+(369, 11, 'Digital', 'SUNDAY', 1, 5, 'Describe what was done', '2026-04-12 03:02:43', '2026-04-12 03:02:43'),
+(370, 11, 'Physical', 'asdasdasdasdasdasdasdas', 1, 2, NULL, '2026-04-13 02:26:56', '2026-04-13 02:26:56'),
+(371, 6, 'Physical', 'qweqwqweqweqweqw', 1, 5, 'done', '2026-04-12 03:18:10', '2026-04-12 03:18:10');
 
 -- --------------------------------------------------------
 
@@ -1281,13 +1287,13 @@ ALTER TABLE `employee`
 -- AUTO_INCREMENT for table `feedback`
 --
 ALTER TABLE `feedback`
-  MODIFY `feedback_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=373;
+  MODIFY `feedback_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=375;
 
 --
 -- AUTO_INCREMENT for table `inventory_request`
 --
 ALTER TABLE `inventory_request`
-  MODIFY `i_ticket_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+  MODIFY `i_ticket_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
 -- AUTO_INCREMENT for table `item`
@@ -1305,7 +1311,7 @@ ALTER TABLE `item_status`
 -- AUTO_INCREMENT for table `job_request`
 --
 ALTER TABLE `job_request`
-  MODIFY `j_ticket_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=369;
+  MODIFY `j_ticket_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=372;
 
 --
 -- AUTO_INCREMENT for table `repair_status`
