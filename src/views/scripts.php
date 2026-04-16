@@ -40,7 +40,7 @@
             <div class="modal-body text-center p-4">
                 <i class="bi bi-exclamation-circle text-warning mb-3" style="font-size: 3rem;"></i>
                 <h4 class="fw-bold">Confirm Acceptance</h4>
-                <p class="text-muted">Are you sure you want to accept this inventory request? You can only handle one task at a time.</p>
+                <p class="text-muted">Are you sure you want to accept this inventory request?</p>
 
                 <div class="d-flex justify-content-center gap-2 mt-4">
                     <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Cancel</button>
@@ -50,6 +50,24 @@
         </div>
     </div>
 </div>
+
+<div class="modal" id="irFinishModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content ">
+            <div class="modal-body text-center p-4">
+                <i class="bi bi-exclamation-circle text-warning mb-3" style="font-size: 3rem;"></i>
+                <h4 class="fw-bold">Confirm Return</h4>
+                <p class="text-muted">Are you sure you want to mark this item as returned?</p>
+
+                <div class="d-flex justify-content-center gap-2 mt-4">
+                    <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" id="irFinishBtn" class="btn btn-success px-4">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <div class="modal" id="confirmModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -82,7 +100,10 @@ const jrModal = new bootstrap.Modal(document.getElementById('jrconfirmAcceptModa
 const jrFinishModal = new bootstrap.Modal(document.getElementById('jrFinishModal'));
 
 const irModal = new bootstrap.Modal(document.getElementById('irconfirmAcceptModal'));
+const irFinishModal = new bootstrap.Modal(document.getElementById('irFinishModal'));
 
+let currentlyActiveBtn = null;
+let currentlyActiveTicketId = null;
 
 // --- JOB REQUEST LOGIC ---
 function acceptJob(ticketId) {
@@ -182,16 +203,59 @@ function processAcceptance(btn, handlerPath, id, modalObj) {
     });
 }
 
+// function returnInventory(btn, ticketId) {
+//     if ( !confirm('Are you sure you want to mark this item as returned?') ) return;
+
+//     btn.disabled = true;
+//     btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Processing...';
+
+//     fetch('data/finish_inv_request.php', {
+//         method: 'POST',
+//         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+//         body: 'ticket_id=' + encodeURIComponent(ticketId) + '&csrf_token=' + encodeURIComponent(CSRF_TOKEN)
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         if (data.success) {
+//             window.location.reload();
+//         } else {
+//             alert("Error: " + data.message);
+//             btn.disabled = false;
+//             btn.innerText = 'Return';
+//         }
+//     })
+//     .catch(error => {
+//         console.error('Error:', error);
+//         alert("A connection error occurred.");
+//         btn.disabled = false;
+//         btn.innerText = 'Return';
+//     });
+// }
+
 function returnInventory(btn, ticketId) {
-    if (!confirm('Are you sure you want to mark this item as returned?')) return;
+    currentlyActiveBtn = btn;
+    currentlyActiveTicketId = ticketId;
+    irFinishModal.show();
+}
 
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Processing...';
+document.getElementById('irFinishBtn').addEventListener('click', function() {
+    if (!currentlyActiveBtn || !currentlyActiveTicketId) return;
 
+    // UI Updates: Disable modal button and show loading on the original button
+    document.getElementById('irFinishBtn').disabled = true;
+    document.getElementById('irFinishBtn').innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+    
+    currentlyActiveBtn.disabled = true;
+    currentlyActiveBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Processing...';
+
+    // Close the modal early for a smoother feel, or keep it open until success
+    irFinishModal.hide();
+
+    // Execute the Fetch
     fetch('data/finish_inv_request.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 'ticket_id=' + encodeURIComponent(ticketId) + '&csrf_token=' + encodeURIComponent(CSRF_TOKEN)
+        body: 'ticket_id=' + encodeURIComponent(currentlyActiveTicketId) + '&csrf_token=' + encodeURIComponent(CSRF_TOKEN)
     })
     .then(response => response.json())
     .then(data => {
@@ -199,17 +263,15 @@ function returnInventory(btn, ticketId) {
             window.location.reload();
         } else {
             alert("Error: " + data.message);
-            btn.disabled = false;
-            btn.innerText = 'Return';
+            resetButtons();
         }
     })
     .catch(error => {
         console.error('Error:', error);
         alert("A connection error occurred.");
-        btn.disabled = false;
-        btn.innerText = 'Return';
+        resetButtons();
     });
-}
+});
 </script>
 
 
