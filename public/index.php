@@ -66,7 +66,8 @@ if (array_key_exists($page, $routes)) {
 </head>
 
 <body class="layout-fixed sidebar-expand-lg sidebar-open bg-body-tertiary">
-<div class="app-wrapper ">
+
+<div class="app-wrapper">
     <?php
     include __DIR__ . '/../src/views/header.php';
     include __DIR__ . '/../src/views/sidebar.php';
@@ -84,6 +85,7 @@ if (array_key_exists($page, $routes)) {
     }
     ?>
 </div>
+
 <script src="/js/apexcharts.min.js"></script>
 <script src="/js/overlayscrollbars.browser.es6.min.js"></script>
 <script src="/js/popper.min.js"></script>

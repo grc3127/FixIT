@@ -22,18 +22,21 @@ $countFinished = $stmtFinished->fetchColumn();
 // Fetch NEW Inventory Requests
 $sqlInv = "SELECT 
             ir.i_ticket_id, 
-            ir.item_id,       -- Added item_id for the collapse trigger
+            ir.item_id,       
             ir.description, 
-            ir.updated_at,    -- Use the real column name here
+            ir.updated_at,    
             ir.status_id,
             i.article,
-            e.first_name, 
-            e.last_name, 
+            e.first_name AS requested_first_name, 
+            e.last_name AS requested_last_name, 
             e.profile_pic,
+            tech.first_name AS given_first_name,
+            tech.last_name AS given_last_name,
             d.dept_name
         FROM inventory_request ir
         JOIN item i ON ir.item_id = i.item_id
         JOIN employee e ON ir.requested_by_employee = e.employee_id
+        LEFT JOIN employee tech ON ir.given_by_employee = tech.employee_id
         JOIN department d ON e.dept_id = d.dept_id
         WHERE ir.status_id IN (1,2) --
         ORDER BY ir.updated_at DESC";

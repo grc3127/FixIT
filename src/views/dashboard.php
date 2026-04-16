@@ -1,5 +1,5 @@
 <!--begin::App Main (STATISTICS and CARDS 1 Layer)-->
-<main class="app-main">
+<main class="app-main ">
   <!--begin::App Content Header-->
   <div class="app-content-header">
     <!--begin::Container-->
@@ -18,7 +18,7 @@
   <!--end::App Content Header-->
 
   <!--begin::App Content (STATISTICS and CARDS here)-->
-  <div class="app-content">
+<div class="app-content ">
     <div class="container-fluid">
         <?php
         $request_overtime = $APP->get('request_overtime');
@@ -28,8 +28,9 @@
         // --- ADMIN & TECHNICIAN VIEW (Roles 1 and 2) ---
         if (isset($_SESSION['role_id']) && in_array($_SESSION['role_id'], [1,2], true)): 
         ?>
+            <!-- insert h-100 -->
             <div class="row">
-                <div class="card mb-4">
+                <div class="card">
                     <div class="card-header">
                         <div class="d-flex">
                             <p class="d-flex flex-column">
@@ -45,7 +46,7 @@
                     </div>
                 </div>
             </div>
-            
+            <br>
             <!-- CARDS -->
             <!-- <div class="row">
                 <div class="col-lg-3 col-6">
@@ -77,7 +78,58 @@
                     </div>
                 </div>
             </div> -->
+        <script>
+            let chart;
+            function updateChartData() {
+                fetch('data/get_chart_data.php')
+                .then(res => res.json())
+                .then(data => {
+                    if (chart) {
+                        chart.updateSeries([
+                            { name: 'Job Requests', data: data.jobs },
+                            { name: 'Inventory Requests', data: data.inventory }
+                        ]);
+                    } else {
+                        initChart(data);
+                    }
+                })
+                .catch(err => console.error("Fetch error:", err));
+            }
 
+            function initChart(data) {
+                const chart_options = {
+                    series: [
+                        { name: 'Job Requests', data: data.jobs },
+                        { name: 'Inventory Requests', data: data.inventory }
+                    ],
+                    chart: {
+                        type: 'bar',
+                        height: 200,
+                        animations: {
+                            enabled: true,
+                            easing: 'easeinout',
+                            speed: 800
+                        }
+                    },
+                    colors: ['#0d6efd', '#20c997'],
+                    xaxis: {
+                        categories: ['Monthly', 'Weekly', 'Daily'],
+                    },
+                    tooltip: {
+                    y: {
+                        formatter: function(val) {
+                        return val + ' requests';
+                        },
+                    },
+                    }
+                };
+
+                chart = new ApexCharts(document.querySelector('#sales-chart1'), chart_options);
+                chart.render();
+            }
+            updateChartData();
+            setInterval(updateChartData, 30000); 
+        </script>
         <?php 
           // --- REGULAR EMPLOYEE VIEW ---
           else: 
@@ -250,86 +302,20 @@
 
           <?php endif; ?>
 
-        <?php 
+        
 
+    </div>
+    <?php 
         // --- SHARED FEEDBACK SECTION (Admin Only) ---
         if (isset($_SESSION['role_id']) && $_SESSION['role_id'] === 1): 
         ?>
             <div class="row">
+                <div class="col-12">
                     <div class="card direct-chat direct-chat-primary ">
                         <?php include 'feedback.php'; ?>
                     </div>
+                </div>
             </div>
         <?php endif; ?>
-
-    </div>
 </div>
-  <!--end::App Content-->
 </main>
-<!--end::App Main-->
-
-
-<?php 
-
-// --- SHARED FEEDBACK SECTION (Admin Only) ---
-if (isset($_SESSION['role_id']) && $_SESSION['role_id'] === 1): 
-?>
-    <script>
-    let chart;
-    function updateChartData() {
-        fetch('data/get_chart_data.php')
-        .then(res => res.json())
-        .then(data => {
-            if (chart) {
-                chart.updateSeries([
-                    { name: 'Job Requests', data: data.jobs },
-                    { name: 'Inventory Requests', data: data.inventory }
-                ]);
-            } else {
-                initChart(data);
-            }
-        })
-        .catch(err => console.error("Fetch error:", err));
-    }
-
-    function initChart(data) {
-        const chart_options = {
-            series: [
-                { name: 'Job Requests', data: data.jobs },
-                { name: 'Inventory Requests', data: data.inventory }
-            ],
-            chart: {
-                type: 'bar',
-                height: 200,
-                animations: {
-                    enabled: true,
-                    easing: 'easeinout',
-                    speed: 800
-                }
-            },
-            colors: ['#0d6efd', '#20c997'],
-            xaxis: {
-                categories: ['Monthly', 'Weekly', 'Daily'],
-            },
-            tooltip: {
-            y: {
-                formatter: function(val) {
-                return val + ' requests';
-                },
-            },
-            }
-        };
-
-        chart = new ApexCharts(document.querySelector('#sales-chart1'), chart_options);
-        chart.render();
-}
-updateChartData();
-setInterval(updateChartData, 30000); 
-<?php endif; ?>
-
-
-
-
-
-
-</script>

@@ -121,18 +121,18 @@ include '../src/handlers/inventory_request_data.php';
         <!-- ITEM REQUEST LIST -->
         <div class="card mb-4 shadow-sm">
             <div class="card-header">
-                <h3 class="card-title">New Inventory Requests</h3>
+                <h3 class="card-title">Inventory Requests</h3>
             </div>
 
             <div class="card-body p-3 h-100">
 
             <?php
             if (empty($inventoryRequests)) {
-                echo '<p class="text-center text-muted">No new inventory requests found.</p>';
+                echo '<p class="text-center text-muted">No inventory requests found.</p>';
             } else {
                 foreach ($inventoryRequests as $row) {
                     $profilePic = !empty($row['profile_pic']) ? htmlspecialchars($row['profile_pic']) : 'dist/img/user-default.jpg';
-                    $fullName   = htmlspecialchars($row['first_name'] . ' ' . $row['last_name']);
+                    $fullName   = htmlspecialchars($row['requested_first_name'] . ' ' . $row['requested_last_name']);
                     
                     // Use i_ticket_id for the collapse ID to ensure it's unique
                     $ticketID   = "invDetails" . $row['i_ticket_id']; 
@@ -140,9 +140,10 @@ include '../src/handlers/inventory_request_data.php';
                     // Use updated_at (which we added back to the SELECT)
                     $formattedDateTime = date('M d, Y | h:i A', strtotime($row['updated_at']));
                 
-                    $deptName    = htmlspecialchars($row['dept_name']);
-                    $article     = htmlspecialchars($row['article']);
-                    $description = htmlspecialchars($row['description']);
+                    $deptName        = htmlspecialchars($row['dept_name']);
+                    $article         = htmlspecialchars($row['article']);
+                    $description     = htmlspecialchars($row['description']);
+                    $givenByEmployee = htmlspecialchars($row['given_first_name'] . ' ' . $row['given_last_name']);
                    
             ?>
 
@@ -192,7 +193,16 @@ include '../src/handlers/inventory_request_data.php';
                                 <div class="col-auto px-1">:</div>
                                 <div class="col"><?php echo $description ?></div>
                             </div>
-
+                            <?php
+                                if (isset($_SESSION['role_id']) && $_SESSION['role_id'] === 1): 
+                            ?>
+                            <div class="row mb-3 align-items-baseline">
+                                <div class="col-auto text-muted" style="width: 30px;"><i class="bi bi-chat-left-text"></i></div>
+                                <div class="col-auto px-1" style="width: 120px;"><strong>Taken by</strong></div>
+                                <div class="col-auto px-1">:</div>
+                                <div class="col"><?php echo $givenByEmployee ?></div>
+                            </div>
+                            <?php endif; ?>
                             <div class="row">
                                 <div class="col">
                                     <?php if($row['status_id'] == 1): ?>

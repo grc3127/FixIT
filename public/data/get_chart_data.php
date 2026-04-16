@@ -4,7 +4,7 @@ require_once __DIR__ . "/../../config/bootstrap.php";
 header('Content-Type: application/json');
 
 Security::requireAuth();
-Security::requireRole([1]); // Admin only
+Security::requireRole([1,2]); // Admin and Tech Only
 
 $finishedStatus = 5;
 
