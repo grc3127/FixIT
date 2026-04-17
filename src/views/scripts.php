@@ -338,7 +338,7 @@ document.getElementById('irFinishBtn').addEventListener('click', function() {
             // });
             articleSelect.disabled = false;
 
-            const defaultOption = new Option("Select an article...", "", true, true);
+            const defaultOption = new Option("Select an item...", "", true, true);
             defaultOption.disabled = true;
             articleSelect.add(defaultOption);
 
