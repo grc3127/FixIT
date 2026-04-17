@@ -55,6 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['mobile_num']  = $user['mobile_num'];
                     $_SESSION['address']     = $user['address'];
                     $_SESSION['profile_pic'] = $user['profile_pic'];
+                    $_SESSION['profile_pic'] = !empty($user['profile_pic']) ? $user['profile_pic'] : '/img/profile_pic/default.png';
 
                     $_SESSION['user_data'] = [
                         'employee_id' => $user['employee_id'],

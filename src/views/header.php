@@ -55,7 +55,9 @@ if (!$roleId) {
           <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
             <!-- MAKE DYNAMIC LATER -->
             <img
-              src="<?php echo  htmlspecialchars($_SESSION['profile_pic']) ?>"
+              
+              src="<?php 
+              echo  htmlspecialchars($_SESSION['profile_pic']) ?>"
               class="user-image rounded-circle shadow"
               alt="User Image"
             />
