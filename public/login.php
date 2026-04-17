@@ -114,7 +114,12 @@ $csrfToken = Security::generateCsrfToken();
     <link rel="stylesheet" href="css/adminlte.css" />
   </head>
 
-  <body class="login-page bg-body-secondary">
+  <body class="login-page bg-body-secondary "
+  style=" background-image: url('/img/AdminLTELogo.png');
+          background-repeat: no-repeat;
+          background-attachment: fixed;
+          background-position: center;
+          background-size: 40% 80%;">
     <div class="login-box">
       <div class="card card-outline card-primary">
         <div class="card-header">
