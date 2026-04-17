@@ -329,8 +329,18 @@ document.getElementById('irFinishBtn').addEventListener('click', function() {
         articleSelect.innerHTML = '';
 
         if (selectedId && articleMap[selectedId]) {
+            // articleSelect.disabled = false;
+            // articleSelect.add(new Option("Select an article...", "", true, true));
+        
+            // const articles = articleMap[selectedId];
+            // Object.entries(articles).forEach(([itemId, article]) => {
+            //     articleSelect.add(new Option(article, itemId));
+            // });
             articleSelect.disabled = false;
-            articleSelect.add(new Option("Select an article...", "", true, true));
+
+            const defaultOption = new Option("Select an article...", "", true, true);
+            defaultOption.disabled = true;
+            articleSelect.add(defaultOption);
 
             const articles = articleMap[selectedId];
             Object.entries(articles).forEach(([itemId, article]) => {

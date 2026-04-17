@@ -61,7 +61,7 @@ $jsonArticleMap = json_encode($articleMap ?? [], JSON_FORCE_OBJECT);
                                 </div>
                                 <div class="card-footer bg-white border-top-0 p-2">
                                     <button type="button" class="btn btn-primary btn-lg w-100 py-3 fs-5" 
-                                            onclick="confirmSubmission('job')" 
+                                            onclick="confirmSubmission('job')" f
                                             <?php echo  $hasActiveJob ? 'disabled' : '' ?>>
                                         <?php echo  $hasActiveJob ? 'Submission Locked' : 'Submit Job Request' ?>
                                     </button>
